@@ -7,12 +7,13 @@
 WORKDIR="$(pwd)"
 
 # ZyClang
-ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230725-release/Clang-17.0.0-20230725.tar.gz"
+# ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230725-release/Clang-17.0.0-20230725.tar.gz"
+ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240126-release/Clang-19.0.0git-20240126.tar.gz"
 ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 
 # Kernel Source
-KERNEL_GIT="https://github.com/pure-soul-kk/kernel_xiaomi_sm6150"
-KERNEL_BRANCHE="perf"
+KERNEL_GIT="https://gitlab.com/hariphoenix1708/kernel_xiaomi_sweet"
+KERNEL_BRANCHE="main"
 KERNEL_DIR="$WORKDIR/Perf"
 
 # Anykernel3
@@ -21,13 +22,13 @@ ANYKERNEL3_BRANCHE="master"
 
 # Build
 DEVICES_CODE="sweet"
-DEVICE_DEFCONFIG="vendor/sweet_perf_defconfig"
+DEVICE_DEFCONFIG="vendor/sweet_defconfig"
 DEVICE_DEFCONFIG_FILE="$KERNEL_DIR/arch/arm64/configs/$DEVICE_DEFCONFIG"
 IMAGE="$KERNEL_DIR/out/arch/arm64/boot/Image.gz"
 DTB="$KERNEL_DIR/out/arch/arm64/boot/dtb.img"
 DTBO="$KERNEL_DIR/out/arch/arm64/boot/dtbo.img"
 
-export KBUILD_BUILD_USER=krishna
+export KBUILD_BUILD_USER=Phoenix
 export KBUILD_BUILD_HOST=GitHubCI
 
 msg() {
@@ -118,7 +119,7 @@ cp $DTBO .
 # PACK FILE
 time=$(TZ='Asia/Kolkata' date +"%Y-%m-%d %H:%M:%S")
 asia_time=$(TZ='Asia/Kolkata' date +%Y%m%d%H)
-ZIP_NAME="Perf-$KERNEL_VERSION-KernelSU-$KERNELSU_VERSION.zip"
+ZIP_NAME="Phoenix-$KERNEL_VERSION-KernelSU-$KERNELSU_VERSION.zip"
 find ./ * -exec touch -m -d "$time" {} \;
 zip -r9 $ZIP_NAME *
 mkdir -p $WORKDIR/out && cp *.zip $WORKDIR/out
