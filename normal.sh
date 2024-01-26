@@ -14,7 +14,7 @@ ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 # Kernel Source
 KERNEL_GIT="https://gitlab.com/hariphoenix1708/kernel_xiaomi_sweet"
 KERNEL_BRANCHE="main"
-KERNEL_DIR="$WORKDIR/Perf
+KERNEL_DIR="$WORKDIR/Perf"
 
 # Anykernel3
 ANYKERNEL3_GIT="https://github.com/pure-soul-kk/AnyKernel3"
