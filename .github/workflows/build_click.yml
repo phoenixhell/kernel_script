@@ -24,6 +24,7 @@ jobs:
       - name: Start KSU building...
         run: |
           cd $GITHUB_WORKSPACE
+          sudo bash scripts/config --disable CC_STACKPROTECTOR_STRONG
           sudo bash kernelsu.sh
           sudo chmod -R 0777 ./*
           echo "RELEASE_NAME=$(cat "$GITHUB_WORKSPACE/out/RELEASETITLE.txt")" >> $GITHUB_ENV
