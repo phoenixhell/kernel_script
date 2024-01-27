@@ -38,7 +38,7 @@ msg() {
 }
 
 cd $WORKDIR
-
+bash scripts/config --disable CC_STACKPROTECTOR_STRONG
 # Download ZyClang
 msg " • 🌸 Work on $WORKDIR 🌸"
 msg " • 🌸 Cloning Toolchain 🌸 "
