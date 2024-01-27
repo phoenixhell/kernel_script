@@ -38,7 +38,7 @@ msg() {
 }
 
 cd $WORKDIR
-bash scripts/config --disable CC_STACKPROTECTOR_STRONG
+
 # Download ZyClang
 msg " • 🌸 Work on $WORKDIR 🌸"
 msg " • 🌸 Cloning Toolchain 🌸 "
@@ -54,6 +54,8 @@ LLD_VERSION="$($ZYCLANG_DIR/ld.lld --version | head -n 1)"
 msg " • 🌸 Cloning Kernel Source 🌸 "
 git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCHE $KERNEL_DIR
 cd $KERNEL_DIR
+scripts/config --disable CC_STACKPROTECTOR_STRONG
+echo"Test done📌"
 
 msg " • 🌸 Patching KernelSU 🌸 "
 curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
