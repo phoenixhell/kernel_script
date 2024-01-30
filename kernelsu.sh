@@ -55,8 +55,9 @@ LLD_VERSION="$($ZYCLANG_DIR/ld.lld --version | head -n 1)"
 msg " • 🌸 Cloning Kernel Source 🌸 "
 git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCHE $KERNEL_DIR
 cd $KERNEL_DIR
-scripts/config --disable CC_STACKPROTECTOR_STRONG
-echo"Test done📌"
+
+sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
+echo "❗❗❗➡️DONE⬅️❗❗❗"
 
 msg " • 🌸 Patching KernelSU 🌸 "
 curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
