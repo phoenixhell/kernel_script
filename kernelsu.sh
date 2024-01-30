@@ -9,6 +9,7 @@ WORKDIR="$(pwd)"
 # ZyClang
 # ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230725-release/Clang-17.0.0-20230725.tar.gz"
 ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/18.0.0git-20240124-release/Clang-18.0.0git-20240124.tar.gz"
+
 ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 
 # Kernel Source
@@ -85,6 +86,7 @@ msg " • 🌸 Started Compilation 🌸 "
 args="PATH=$ZYCLANG_DIR:$PATH \
 ARCH=arm64 \
 SUBARCH=arm64 \
+CLANG_TRIPLE=aarch64-linux-gnu- \
 CROSS_COMPILE=aarch64-linux-gnu- \
 CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
 CC=clang \
