@@ -13,11 +13,16 @@ WORKDIR="$(pwd)"
 ##ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 
 aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/phoenix-1708/MAJIC/resolve/main/toolchain.tar.gz -d $WORKDIR -o toolchain.tar.gz
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86/+archive/refs/heads/master/clang-r498229b.tar.gz -d $WORKDIR -o toolchain.tar.gz
 tar xvzf toolchain.tar.gz -C $WORKDIR
+mkdir $WORKDIR/clang-r498229b
+tar xvzf clang-r498229b.tar.gz -C $WORKDIR/clang-r498229b
 
 msg " • 🌸 Work on $WORKDIR 🌸"
 msg " • 🌸 Cloning Custom Toolchain 🌸 "
-ZYCLANG_DIR="$WORKDIR/clang-r428724/bin"
+
+## ZYCLANG_DIR="$WORKDIR/clang-r428724/bin"
+ZYCLANG_DIR="$WORKDIR/clang-r498229b/bin"
 GCC64="$WORKDIR/aarch64-linux-android-4.9/bin"
 GCC32="$WORKDIR/arm-linux-androideabi-4.9/bin"
 
