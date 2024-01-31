@@ -94,25 +94,18 @@ msg " • 🌸 Started Compilation 🌸 "
 
 args="PATH=$ZYCLANG_DIR:$GCC64:$GCC32:$PATH \
 ARCH=arm64 \
-SUBARCH=arm64 \
 CLANG_TRIPLE=aarch64-linux-gnu- \
 CROSS_COMPILE=aarch64-linux-android- \
-CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+CROSS_COMPILE_ARM32=arm-linux-androideabi- \
 CC=clang \
-NM=llvm-nm \
-CXX=clang++ \
-AR=llvm-ar \
-LD=ld.lld \
-STRIP=llvm-strip \
-OBJDUMP=llvm-objdump \
-OBJSIZE=llvm-size \
-READELF=llvm-readelf \
-HOSTAR=llvm-ar \
-HOSTLD=ld.lld \
-HOSTCC=clang \
-HOSTCXX=clang++ \
 LLVM=1 \
-LLVM_IAS=1"
+LLVM_IAS=1 \
+AR=llvm-ar \
+NM=llvm-nm \
+LD=ld.lld \
+OBJCOPY=llvm-objcopy \
+OBJDUMP=llvm-objdump \
+STRIP=llvm-strip"
 
 # LINUX KERNEL VERSION
 rm -rf out
