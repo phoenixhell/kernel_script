@@ -12,6 +12,12 @@ ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/18.0.0git-20
 
 ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 
+aria2c --console-log-level=error -c -x 16 -s 16 -k 1M https://huggingface.co/phoenix-1708/MAJIC/resolve/main/toolchain.tar.gz -d $WORKDIR -o toolchain.tar.gz
+tar xvzf toolchain.tar.gz -C $WORKDIR
+
+GCC64="$WORKDIR/aarch64-linux-android-4.9/bin"
+GCC32="$WORKDIR/arm-linux-androideabi-4.9/bin"
+
 # Kernel Source
 KERNEL_GIT="https://gitlab.com/hariphoenix1708/kernel_xiaomi_sweet"
 KERNEL_BRANCHE="main"
@@ -84,11 +90,11 @@ sed -i "/CONFIG_LOCALVERSION=\"/s/.$/-KSU-$KERNELSU_VERSION\"/" $DEVICE_DEFCONFI
 # BUILD KERNEL
 msg " • 🌸 Started Compilation 🌸 "
 
-args="PATH=$ZYCLANG_DIR:$PATH \
+args="PATH=$ZYCLANG_DIR:$GCC64:$GCC32:$PATH \
 ARCH=arm64 \
 SUBARCH=arm64 \
 CLANG_TRIPLE=aarch64-linux-gnu- \
-CROSS_COMPILE=aarch64-linux-gnu- \
+CROSS_COMPILE=aarch64-linux-android- \
 CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
 CC=clang \
 NM=llvm-nm \
