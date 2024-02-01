@@ -8,7 +8,7 @@ WORKDIR="$(pwd)"
 
 # ZyClang
 # ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230725-release/Clang-17.0.0-20230725.tar.gz"
-ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/18.0.0git-20240124-release/Clang-18.0.0git-20240124.tar.gz"
+# ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/18.0.0git-20240124-release/Clang-18.0.0git-20240124.tar.gz"
 
 ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 
@@ -43,10 +43,12 @@ cd $WORKDIR
 # Download ZyClang
 msg " • 🌸 Work on $WORKDIR 🌸"
 msg " • 🌸 Cloning Toolchain 🌸 "
-mkdir -p ZyClang
+# mkdir -p ZyClang
 aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 tar -C ZyClang/ -zxvf ZyClang.tar.gz
 rm -rf ZyClang.tar.gz
+
+git clone https://github.com/kdrag0n/proton-clang.git -b master $WORKDIR/ZyClang
 
 # CLANG LLVM VERSIONS
 CLANG_VERSION="$($ZYCLANG_DIR/clang --version | head -n 1)"
