@@ -14,7 +14,7 @@ ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 
 # Kernel Source
 KERNEL_GIT="https://gitlab.com/hariphoenix1708/kernel_xiaomi_sweet"
-KERNEL_BRANCHE="main"
+KERNEL_BRANCHE="dev"
 KERNEL_DIR="$WORKDIR/Perf"
 
 # Anykernel3
@@ -56,6 +56,8 @@ msg " • 🌸 Cloning Kernel Source 🌸 "
 git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCHE $KERNEL_DIR
 cd $KERNEL_DIR
 
+sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' $DEVICE_DEFCONFIG_FILE 
+sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' $DEVICE_DEFCONFIG_FILE
 sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
 echo "❗❗❗➡️DONE⬅️❗❗❗"
 
@@ -88,23 +90,15 @@ args="PATH=$ZYCLANG_DIR:$PATH \
 ARCH=arm64 \
 SUBARCH=arm64 \
 CLANG_TRIPLE=aarch64-linux-gnu- \
-CROSS_COMPILE=aarch64-linux-gnu- \
-CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
 CC=clang \
-NM=llvm-nm \
-CXX=clang++ \
-AR=llvm-ar \
 LD=ld.lld \
-STRIP=llvm-strip \
+AR=llvm-ar \
+NM=llvm-nm \
+OBJCOPY=llvm-objcopy \
 OBJDUMP=llvm-objdump \
-OBJSIZE=llvm-size \
 READELF=llvm-readelf \
-HOSTAR=llvm-ar \
-HOSTLD=ld.lld \
-HOSTCC=clang \
-HOSTCXX=clang++ \
-LLVM=1 \
-LLVM_IAS=1"
+OBJSIZE=llvm-size \
+STRIP=llvm-strip"
 
 # LINUX KERNEL VERSION
 rm -rf out
