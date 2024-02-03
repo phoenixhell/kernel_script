@@ -13,9 +13,9 @@ WORKDIR="$(pwd)"
 ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 
 # Kernel Source
-KERNEL_GIT="https://gitlab.com/hariphoenix1708/kernel_xiaomi_sweet"
+KERNEL_GIT="https://gitlab.com/hariphoenix1708/android_kernel_xiaomi_sweet"
 KERNEL_BRANCHE="dev"
-KERNEL_DIR="$WORKDIR/Perf"
+KERNEL_DIR="$WORKDIR/Phoenix"
 
 # Anykernel3
 ANYKERNEL3_GIT="https://github.com/pure-soul-kk/AnyKernel3"
@@ -56,8 +56,25 @@ LLD_VERSION="$($ZYCLANG_DIR/ld.lld --version | head -n 1)"
 
 msg " • 🌸 Cloning Kernel Source 🌸 "
 git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCHE $KERNEL_DIR
-cd $KERNEL_DIR
+#cd $KERNEL_DIR
 
+# APATCH
+msg " • 🌸 Apatch Patch 🌸 "
+git clone https://github.com/Yervant7/Apatch_Action_template -b main yv
+cd $KERNEL_DIR
+git apply $WORKDIR/yv/module_fix.patch
+cp -r $WORKDIR/yv/apatch $KERNEL_DIR
+cd $KERNEL_DIR
+echo " " >> arch/arm64/Kconfig
+echo 'source "apatch/Kconfig"' >> arch/arm64/Kconfig
+echo "CONFIG_APATCH_SUPPORT=y" >> $DEVICE_DEFCONFIG_FILE
+echo "CONFIG_APATCH_FIX_MODULES=y" >> $DEVICE_DEFCONFIG_FILE
+echo "CONFIG_APATCH_CUSTOMS=y" >> $DEVICE_DEFCONFIG_FILE
+sed -i 's/CONFIG_LOCALVERSION_AUTO=y/CONFIG_LOCALVERSION_AUTO=n/' $DEVICE_DEFCONFIG_FILE
+
+
+# CLANG CONFIG PATCH
+msg " • 🌸 Clang Config Patch 🌸 "
 sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' $DEVICE_DEFCONFIG_FILE 
 sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' $DEVICE_DEFCONFIG_FILE
 sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
@@ -90,16 +107,13 @@ msg " • 🌸 Started Compilation 🌸 "
 
 args="PATH=$ZYCLANG_DIR:$PATH \
 ARCH=arm64 \
-SUBARCH=arm64 \
-CLANG_TRIPLE=aarch64-linux-gnu- \
+CROSS_COMPILE=aarch64-linux-gnu- \
+CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
 CC=clang \
-LD=ld.lld \
 AR=llvm-ar \
 NM=llvm-nm \
-OBJCOPY=llvm-objcopy \
+LD=ld.lld \
 OBJDUMP=llvm-objdump \
-READELF=llvm-readelf \
-OBJSIZE=llvm-size \
 STRIP=llvm-strip"
 
 # LINUX KERNEL VERSION
@@ -127,7 +141,7 @@ mkdir -p $WORKDIR/out && cp *.zip $WORKDIR/out
 
 cd $WORKDIR/out
 echo "
-### Perf KERNEL With/Without KERNELSU
+### Phoenix KERNEL With/Without KERNELSU
 1. **Time** : $(TZ='Asia/Kolkata' date +"%Y-%m-%d %H:%M:%S") # Asian TIME
 2. **Device Code** : $DEVICES_CODE
 3. **LINUX Version** : $KERNEL_VERSION
@@ -136,7 +150,7 @@ echo "
 6. **LLD Version**: $LLD_VERSION
 " > RELEASE.md
 echo "
-### Perf KERNEL With/Without KERNELSU
+### Phoenix KERNEL With/Without KERNELSU
 1. **Time** : $(TZ='Asia/Kolkata' date +"%Y-%m-%d %H:%M:%S") # Asia TIME
 2. **Device Code** : $DEVICES_CODE
 3. **LINUX Version** : $KERNEL_VERSION
@@ -144,7 +158,7 @@ echo "
 5. **CLANG Version**: ZyC clang version 18.0.0
 6. **LLD Version**: LLD 18.0.0
 " > telegram_message.txt
-echo "Perf-$KERNEL_VERSION" > RELEASETITLE.txt
+echo "Phoenix-$KERNEL_VERSION" > RELEASETITLE.txt
 cat RELEASE.md
 cat telegram_message.txt
 cat RELEASETITLE.txt
