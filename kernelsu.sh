@@ -62,6 +62,7 @@ git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCHE $KERNEL_DIR
 msg " • 🌸 Apatch Patch 🌸 "
 git clone https://github.com/Yervant7/Apatch_Action_template -b main yv
 cd $KERNEL_DIR
+chmod 755 kernel/module.c
 git apply $WORKDIR/yv/module_fix.patch
 cp -r $WORKDIR/yv/apatch $KERNEL_DIR
 cd $KERNEL_DIR
