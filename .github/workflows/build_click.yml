@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-23.10
+    runs-on: skysider/glibc_builder64:2.36
     permissions:
       contents: write
     steps:
