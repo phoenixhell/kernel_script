@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: shubhamvis98/kernel-builder:latest
+      image: jaspnas/kernel-builder:gcc-12
     permissions:
       contents: write
     steps:
