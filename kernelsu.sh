@@ -63,22 +63,7 @@ LLD_VERSION="$($ZYCLANG_DIR/ld.lld --version | head -n 1)"
 
 msg " • 🌸 Cloning Kernel Source 🌸 "
 git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCHE $KERNEL_DIR
-#cd $KERNEL_DIR
-
-# APATCH
-msg " • 🌸 Apatch Patch 🌸 "
-git clone https://github.com/Yervant7/Apatch_Action_template -b main yv
 cd $KERNEL_DIR
-chmod 755 kernel/module.c
-git apply $WORKDIR/yv/module_fix.patch
-cp -r $WORKDIR/yv/apatch $KERNEL_DIR
-cd $KERNEL_DIR
-echo " " >> arch/arm64/Kconfig
-echo 'source "apatch/Kconfig"' >> arch/arm64/Kconfig
-echo "CONFIG_APATCH_SUPPORT=y" >> $DEVICE_DEFCONFIG_FILE
-echo "CONFIG_APATCH_FIX_MODULES=y" >> $DEVICE_DEFCONFIG_FILE
-echo "CONFIG_APATCH_CUSTOMS=y" >> $DEVICE_DEFCONFIG_FILE
-sed -i 's/CONFIG_LOCALVERSION_AUTO=y/CONFIG_LOCALVERSION_AUTO=n/' $DEVICE_DEFCONFIG_FILE
 
 
 # CLANG CONFIG PATCH
