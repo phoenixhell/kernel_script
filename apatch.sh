@@ -88,28 +88,6 @@ sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' $DEVICE_DEFC
 sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
 echo "❗❗❗➡️DONE⬅️❗❗❗"
 
-msg " • 🌸 Patching KernelSU 🌸 "
-curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
-            echo "CONFIG_KPROBES=y" >> $DEVICE_DEFCONFIG_FILE
-            echo "CONFIG_HAVE_KPROBES=y" >> $DEVICE_DEFCONFIG_FILE
-            echo "CONFIG_KPROBE_EVENTS=y" >> $DEVICE_DEFCONFIG_FILE
-KSU_GIT_VERSION=$(cd KernelSU && git rev-list --count HEAD)
-KERNELSU_VERSION=$(($KSU_GIT_VERSION + 10000 + 200))
-msg " • 🌸 KernelSU version: $KERNELSU_VERSION 🌸 "
-
-# PATCH KERNELSU
-msg " • 🌸 Applying patches || "
-
-apply_patchs () {
-for patch_file in $WORKDIR/patchs/*.patch
-	do
-	patch -p1 < "$patch_file"
-done
-}
-apply_patchs
-
-sed -i "/CONFIG_LOCALVERSION=\"/s/.$/-KSU-$KERNELSU_VERSION\"/" $DEVICE_DEFCONFIG_FILE
-
 # BUILD KERNEL
 msg " • 🌸 Started Compilation 🌸 "
 
