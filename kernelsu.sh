@@ -9,18 +9,19 @@ WORKDIR="$(pwd)"
 # ZyClang
 # ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230725-release/Clang-17.0.0-20230725.tar.gz"
 # ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240203-release/Clang-19.0.0git-20240203.tar.gz"
-ZYCLANG_DLINK="https://github.com/SkiddieKernel/Clang/releases/download/202401060333/skiddie-clang-18.0.0-7c3bcc3-202401060333.tar.zst"
 
 ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 
 # Kernel Source
-KERNEL_GIT="https://gitlab.com/hariphoenix1708/android_kernel_xiaomi_sweet"
+KERNEL_GIT="https://gitlab.com/playground7942706/android_kernel_xiaomi_sweet"
 KERNEL_BRANCHE="dev"
 KERNEL_DIR="$WORKDIR/Phoenix"
 
 # Anykernel3
-ANYKERNEL3_GIT="https://github.com/pure-soul-kk/AnyKernel3"
-ANYKERNEL3_BRANCHE="master"
+# ANYKERNEL3_GIT="https://github.com/pure-soul-kk/AnyKernel3"
+# ANYKERNEL3_BRANCHE="master"
+ANYKERNEL3_GIT="https://github.com/fiqri19102002/AnyKernel3"
+ANYKERNEL3_BRANCHE="sweet"
 
 # Build
 DEVICES_CODE="sweet"
@@ -44,18 +45,18 @@ cd $WORKDIR
 # Download ZyClang
 msg " • 🌸 Work on $WORKDIR 🌸"
 msg " • 🌸 Cloning Toolchain 🌸 "
-mkdir -p ZyClang
+#mkdir -p ZyClang
 #aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 #tar -C ZyClang/ -zxvf ZyClang.tar.gz
 #rm -rf ZyClang.tar.gz
 
 # SKIDDIE CLANG
-aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.zst
-tar --use-compress-program=unzstd -xvf ZyClang.tar.zst -C $WORKDIR/ZyClang
-rm -rf ZyClang.tar.zst
+#aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.zst
+#tar --use-compress-program=unzstd -xvf ZyClang.tar.zst -C $WORKDIR/ZyClang
+#rm -rf ZyClang.tar.zst
 
 # PROTON CLANG
-### git clone https://github.com/kdrag0n/proton-clang.git -b master $WORKDIR/ZyClang
+git clone https://gitlab.com/fiqri19102002/proton_clang-mirror.git -b main $WORKDIR/ZyClang
 
 # CLANG LLVM VERSIONS
 CLANG_VERSION="$($ZYCLANG_DIR/clang --version | head -n 1)"
@@ -117,12 +118,21 @@ msg " • 🌸 LINUX KERNEL VERSION : $KERNEL_VERSION 🌸 "
 make O=out $args -j"$(nproc --all)"
 
 msg " • 🌸 Packing Kernel 🌸 "
+# INBUILT PACKING METHOD
+#cd $WORKDIR
+#git clone --depth=1 $ANYKERNEL3_GIT -b $ANYKERNEL3_BRANCHE $WORKDIR/Anykernel3
+#cd $WORKDIR/Anykernel3
+#cp $IMAGE .
+#cp $DTB $WORKDIR/Anykernel3/dtb
+#cp $DTBO .
+
+# MODIFIED PACKING METHOD
 cd $WORKDIR
 git clone --depth=1 $ANYKERNEL3_GIT -b $ANYKERNEL3_BRANCHE $WORKDIR/Anykernel3
 cd $WORKDIR/Anykernel3
 cp $IMAGE .
-cp $DTB $WORKDIR/Anykernel3/dtb
-cp $DTBO .
+cp $DTB .
+cp $DTBO $WORKDIR/AnyKernel3/dtbo/oss/dtbo.img
 
 # PACK FILE
 time=$(TZ='Asia/Kolkata' date +"%Y-%m-%d %H:%M:%S")
