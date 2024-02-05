@@ -7,7 +7,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: jaspnas/kernel-builder:gcc-12
+      image: accupara/aosp:latest
     permissions:
       contents: write
     steps:
@@ -21,13 +21,13 @@ jobs:
       - name: Configuration Environment‌‌...
         run: |
           cd $GITHUB_WORKSPACE
-          bash env.sh
+          sudo bash env.sh
 
       - name: Start KSU building...
         run: |
           cd $GITHUB_WORKSPACE
-          bash kernelsu.sh
-          chmod -R 0777 ./*
+          sudo bash kernelsu.sh
+          sudo chmod -R 0777 ./*
           echo "RELEASE_NAME=$(cat "$GITHUB_WORKSPACE/out/RELEASETITLE.txt")" >> $GITHUB_ENV
           echo "${{ env.RELEASE_NAME }}"
 
