@@ -12,7 +12,7 @@ jobs:
       contents: write
     steps:
       - name: Get the source code of this repositorie...
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
 
       - name: Get variable configuration...
         run: |
