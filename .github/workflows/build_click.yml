@@ -21,7 +21,7 @@ jobs:
       - name: Configuration Environment‌‌...
         run: |
           cd $GITHUB_WORKSPACE
-         # sudo bash env.sh
+          sudo bash env.sh
 
       - name: Start KSU building...
         run: |
