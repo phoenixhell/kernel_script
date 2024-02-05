@@ -1,14 +1,17 @@
 name: CI Build - Click
 
 on:
+  watch:
+    types: [started]
+    
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-20.04
-    container:
-      image: accupara/aosp:latest
-      options: --user root
+#    container:
+#      image: accupara/aosp:latest
+#     options: --user root
     permissions:
       contents: write
     steps:
@@ -22,7 +25,7 @@ jobs:
       - name: Configuration Environment‌‌...
         run: |
           cd $GITHUB_WORKSPACE
-          #sudo bash env.sh
+          sudo bash env.sh
 
       - name: Start KSU building...
         run: |
