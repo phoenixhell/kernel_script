@@ -12,7 +12,7 @@ WORKDIR="$(pwd)"
 # ZYCLANG_DLINK="https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-aarch64-linux-gnu.tar.xz"
 
 # ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
-ZYCLANG_DIR="$WORKDIR/ZyClang/clang+llvm-17.0.1-aarch64-linux-gnu/bin"
+# ZYCLANG_DIR="$WORKDIR/ZyClang/clang+llvm-17.0.1-aarch64-linux-gnu/bin"
 
 # Kernel Source
 KERNEL_GIT="https://gitlab.com/playground7942706/android_kernel_xiaomi_sweet"
@@ -36,6 +36,10 @@ DTBO="$KERNEL_DIR/out/arch/arm64/boot/dtbo.img"
 export KBUILD_BUILD_USER=Phoenix
 export KBUILD_BUILD_HOST=GitHubCI
 
+# COMPILER
+#COMPILER=clang
+COMPILER=sd_clang
+
 msg() {
 	echo
 	echo -e "\e[1;32m$*\e[0m"
@@ -47,16 +51,18 @@ cd $WORKDIR
 # Download ZyClang
 msg " • 🌸 Work on $WORKDIR 🌸"
 msg " • 🌸 Cloning Toolchain 🌸 "
-mkdir -p ZyClang 
+ 
 # DEFAULT TAR.GZ
+# mkdir -p ZyClang
 #aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 #tar -C ZyClang/ -zxvf ZyClang.tar.gz
 #rm -rf ZyClang.tar.gz
 
 # IF TAR.XZ
-aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.xz
-tar -C ZyClang/ -zxvf ZyClang.tar.xz
-rm -rf ZyClang.tar.xz
+# mkdir -p ZyClang
+# aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.xz
+# tar -C ZyClang/ -zxvf ZyClang.tar.xz
+# rm -rf ZyClang.tar.xz
 
 # SKIDDIE CLANG
 #aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.zst
@@ -110,16 +116,32 @@ sed -i "/CONFIG_LOCALVERSION=\"/s/.$/-KSU-$KERNELSU_VERSION\"/" $DEVICE_DEFCONFI
 # BUILD KERNEL
 msg " • 🌸 Started Compilation 🌸 "
 
-args="PATH=$ZYCLANG_DIR:$PATH \
-ARCH=arm64 \
-CROSS_COMPILE=aarch64-linux-gnu- \
-CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
-CC=clang \
-AR=llvm-ar \
-NM=llvm-nm \
-LD=ld.lld \
-OBJDUMP=llvm-objdump \
-STRIP=llvm-strip"
+# Set function for starting compile
+compile() {
+	echo -e "Kernel compilation starting"
+	if [ $COMPILER == "clang" ]; then
+		args="PATH=$ZYCLANG_DIR:$PATH \
+	              ARCH=arm64 \
+	              SUBARCH=ARM64 \
+	              CROSS_COMPILE=aarch64-linux-gnu- \
+	              CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+	              CC=clang \
+	              AR=llvm-ar \
+	              NM=llvm-nm \
+	              LD=ld.lld \
+	              OBJDUMP=llvm-objdump \
+	              STRIP=llvm-strip"
+	fi
+	if [ $COMPILER == "sd_clang" ]; then
+		args="PATH=$ZYCLANG_DIR:$PATH \
+		      ARCH=arm64 \
+		      SUBARCH=ARM64 \
+              	      CROSS_COMPILE=aarch64-linux-gnu- \
+	              CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+	              CC=clang"
+        fi
+}
+compile
 
 # LINUX KERNEL VERSION
 rm -rf out
