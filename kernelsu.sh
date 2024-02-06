@@ -138,7 +138,7 @@ compile() {
 		      ARCH=arm64 \
 		      SUBARCH=ARM64 \
               	      CROSS_COMPILE=aarch64-linux-gnu- \
-	              CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+	              CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
 	              CC=clang"
         fi
 }
