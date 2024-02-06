@@ -6,14 +6,23 @@
 
 WORKDIR="$(pwd)"
 
-# ZyClang
-# ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230725-release/Clang-17.0.0-20230725.tar.gz"
-# ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240203-release/Clang-19.0.0git-20240203.tar.gz"
-# ZYCLANG_DLINK="https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-aarch64-linux-gnu.tar.xz"
+# COMPILER
+COMPILER=aosp_clang
+#COMPILER=proton_clang
 
-# ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
-ZYCLANG_DIR="$WORKDIR/ZyClang/sdclang/linux-x86_64/bin"
-# ZYCLANG_DIR="$WORKDIR/ZyClang/clang+llvm-17.0.1-aarch64-linux-gnu/bin"
+
+# ZyClang
+clang_clone() {
+	if [ $COMPILER == "proton_clang" ]; then
+		echo -e "Cloning Proton Clang"
+		ZYCLANG_DLINK="https://huggingface.co/phoenix-1708/MAJIC/resolve/main/proton_clang.tar.gz"
+	fi
+	if [ $COMPILER == "AOSP_clang" ]; then
+		echo -e "Cloning AOSP Clang"
+		ZYCLANG_DLINK="https://huggingface.co/phoenix-1708/MAJIC/resolve/main/toolchain.tar.gz"
+	fi
+}
+clang_clone
 
 # Kernel Source
 KERNEL_GIT="https://gitlab.com/playground7942706/android_kernel_xiaomi_sweet"
@@ -37,10 +46,6 @@ DTBO="$KERNEL_DIR/out/arch/arm64/boot/dtbo.img"
 export KBUILD_BUILD_USER=Phoenix
 export KBUILD_BUILD_HOST=GitHubCI
 
-# COMPILER
-#COMPILER=clang
-COMPILER=sd_clang
-
 msg() {
 	echo
 	echo -e "\e[1;32m$*\e[0m"
@@ -54,27 +59,23 @@ msg " • 🌸 Work on $WORKDIR 🌸"
 msg " • 🌸 Cloning Toolchain 🌸 "
  
 # DEFAULT TAR.GZ
-# mkdir -p ZyClang
-#aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
-#tar -C ZyClang/ -zxvf ZyClang.tar.gz
-#rm -rf ZyClang.tar.gz
-
-# IF TAR.XZ
-# mkdir -p ZyClang
-# aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.xz
-# tar -C ZyClang/ -zxvf ZyClang.tar.xz
-# rm -rf ZyClang.tar.xz
-
-# SKIDDIE CLANG
-#aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.zst
-#tar --use-compress-program=unzstd -xvf ZyClang.tar.zst -C $WORKDIR/ZyClang
-#rm -rf ZyClang.tar.zst
-
-# PROTON CLANG
-# git clone https://gitlab.com/fiqri19102002/proton_clang-mirror.git -b main $WORKDIR/ZyClang
-
-# SD CLANG
-git clone https://github.com/ZyCromerZ/SDClang.git -b 14 $WORKDIR/ZyClang
+clang_setup() {
+	if [ $COMPILER == "proton_clang" ]; then
+		echo -e "Cloning Proton Clang"
+		mkdir -p ZyClang
+		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
+		tar -C ZyClang/ -zxvf ZyClang.tar.gz
+		rm -rf ZyClang.tar.gz
+	fi
+	if [ $COMPILER == "aosp_clang" ]; then
+		echo -e "Cloning AOSP Clang"
+		mkdir -p ZyClang
+		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
+		tar -C ZyClang/ -zxvf ZyClang.tar.gz
+		rm -rf ZyClang.tar.gz
+	fi
+}
+clang_setup
 
 # CLANG LLVM VERSIONS
 CLANG_VERSION="$($ZYCLANG_DIR/clang --version | head -n 1)"
@@ -120,27 +121,37 @@ msg " • 🌸 Started Compilation 🌸 "
 # Set function for starting compile
 compile() {
 	echo -e "Kernel compilation starting"
-	if [ $COMPILER == "clang" ]; then
+	if [ $COMPILER == "proton_clang" ]; then
 		args="PATH=$ZYCLANG_DIR:$PATH \
-	              ARCH=arm64 \
-	              SUBARCH=ARM64 \
-	              CROSS_COMPILE=aarch64-linux-gnu- \
-	              CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
-	              CC=clang \
-	              AR=llvm-ar \
-	              NM=llvm-nm \
-	              LD=ld.lld \
-	              OBJDUMP=llvm-objdump \
-	              STRIP=llvm-strip"
+	            ARCH=arm64 \
+	            SUBARCH=ARM64 \
+	            CROSS_COMPILE=aarch64-linux-gnu- \
+	            CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+	            CC=clang \
+	            AR=llvm-ar \
+	            NM=llvm-nm \
+	            LD=ld.lld \
+	            OBJDUMP=llvm-objdump \
+	            STRIP=llvm-strip"
 	fi
-	if [ $COMPILER == "sd_clang" ]; then
+	if [ $COMPILER == "aosp_clang" ]; then
 		args="PATH=$ZYCLANG_DIR:$PATH \
-		      ARCH=arm64 \
-		      SUBARCH=ARM64 \
-              	      CROSS_COMPILE=aarch64-linux-gnu- \
-	              CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
-	              CC=clang"
-        fi
+		      	ARCH=arm64 \
+		        SUBARCH=ARM64 \
+	            CLANG_TRIPLE=aarch64-linux-gnu- \
+				CROSS_COMPILE=aarch64-linux-android- \
+				CROSS_COMPILE_ARM32=arm-linux-androideabi- \
+				CC=clang \
+				AR=llvm-ar \
+				NM=llvm-nm \
+				OBJCOPY=llvm-objcopy \
+				OBJDUMP=llvm-objdump \
+				READELF=llvm-readelf \
+				OBJSIZE=llvm-size \
+				STRIP=llvm-strip \
+				HOSTCC=clang \
+				HOSTCXX=clang++"
+    fi
 }
 compile
 
