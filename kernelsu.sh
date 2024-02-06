@@ -11,7 +11,8 @@ WORKDIR="$(pwd)"
 # ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240203-release/Clang-19.0.0git-20240203.tar.gz"
 ZYCLANG_DLINK="https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-aarch64-linux-gnu.tar.xz"
 
-ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
+# ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
+ZYCLANG_DIR="$WORKDIR/ZyClang/clang+llvm-17.0.1-aarch64-linux-gnu/bin"
 
 # Kernel Source
 KERNEL_GIT="https://gitlab.com/playground7942706/android_kernel_xiaomi_sweet"
