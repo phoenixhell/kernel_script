@@ -9,7 +9,7 @@ WORKDIR="$(pwd)"
 # ZyClang
 # ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230725-release/Clang-17.0.0-20230725.tar.gz"
 # ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240203-release/Clang-19.0.0git-20240203.tar.gz"
-ZYCLANG_DLINK="https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-aarch64-linux-gnu.tar.xz"
+# ZYCLANG_DLINK="https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-aarch64-linux-gnu.tar.xz"
 
 # ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 ZYCLANG_DIR="$WORKDIR/ZyClang/clang+llvm-17.0.1-aarch64-linux-gnu/bin"
@@ -65,6 +65,9 @@ rm -rf ZyClang.tar.xz
 
 # PROTON CLANG
 # git clone https://gitlab.com/fiqri19102002/proton_clang-mirror.git -b main $WORKDIR/ZyClang
+
+# SD CLANG
+git clone https://github.com/ZyCromerZ/SDClang.git -b 14 $WORKDIR/ZyClang
 
 # CLANG LLVM VERSIONS
 CLANG_VERSION="$($ZYCLANG_DIR/clang --version | head -n 1)"
