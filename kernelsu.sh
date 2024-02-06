@@ -57,7 +57,7 @@ cd $WORKDIR
 # Download ZyClang
 msg " • 🌸 Work on $WORKDIR 🌸"
 msg " • 🌸 Cloning Toolchain 🌸 "
- 
+
 # DEFAULT TAR.GZ
 clang_setup() {
 	if [ $COMPILER == "proton_clang" ]; then
@@ -76,6 +76,21 @@ clang_setup() {
 	fi
 }
 clang_setup
+
+# ENV VAR SETUP
+env_setup() {
+	if [ $COMPILER == "proton_clang" ]; then
+		echo -e "Cloning Proton Clang"
+  		ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
+    	fi
+     	if [ $COMPILER == "aosp_clang" ]; then
+		echo -e "Cloning Proton Clang"
+  		ZYCLANG_DIR="$WORKDIR/ZyClang/clang-r498229b/bin"
+		GCC64="$WORKDIR/ZyClang/aarch64-linux-android-4.9/bin"
+		GCC32="$WORKDIR/ZyClang/arm-linux-androideabi-4.9/bin"
+  	fi
+}
+env_setup
 
 # CLANG LLVM VERSIONS
 CLANG_VERSION="$($ZYCLANG_DIR/clang --version | head -n 1)"
@@ -135,7 +150,7 @@ compile() {
 	            STRIP=llvm-strip"
 	fi
 	if [ $COMPILER == "aosp_clang" ]; then
-		args="PATH=$ZYCLANG_DIR:$PATH \
+		args="PATH=$ZYCLANG_DIR:$GCC64:$GCC32:$PATH \
 		    ARCH=arm64 \
 		    SUBARCH=ARM64 \
 	            CLANG_TRIPLE=aarch64-linux-gnu- \
