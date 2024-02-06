@@ -136,21 +136,21 @@ compile() {
 	fi
 	if [ $COMPILER == "aosp_clang" ]; then
 		args="PATH=$ZYCLANG_DIR:$PATH \
-		      	ARCH=arm64 \
-		        SUBARCH=ARM64 \
+		    ARCH=arm64 \
+		    SUBARCH=ARM64 \
 	            CLANG_TRIPLE=aarch64-linux-gnu- \
-				CROSS_COMPILE=aarch64-linux-android- \
-				CROSS_COMPILE_ARM32=arm-linux-androideabi- \
-				CC=clang \
-				AR=llvm-ar \
-				NM=llvm-nm \
-				OBJCOPY=llvm-objcopy \
-				OBJDUMP=llvm-objdump \
-				READELF=llvm-readelf \
-				OBJSIZE=llvm-size \
-				STRIP=llvm-strip \
-				HOSTCC=clang \
-				HOSTCXX=clang++"
+		    CROSS_COMPILE=aarch64-linux-android- \
+		    CROSS_COMPILE_ARM32=arm-linux-androideabi- \
+		    CC=clang \
+		    AR=llvm-ar \
+		    NM=llvm-nm \
+		    OBJCOPY=llvm-objcopy \
+		    OBJDUMP=llvm-objdump \
+		    READELF=llvm-readelf \
+		    OBJSIZE=llvm-size \
+	            STRIP=llvm-strip \
+		    HOSTCC=clang \
+		    HOSTCXX=clang++"
     fi
 }
 compile
