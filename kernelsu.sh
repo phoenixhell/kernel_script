@@ -12,6 +12,7 @@ WORKDIR="$(pwd)"
 # ZYCLANG_DLINK="https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-aarch64-linux-gnu.tar.xz"
 
 # ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
+ZYCLANG_DIR="$WORKDIR/ZyClang/sdclang/linux-x86_64/bin"
 # ZYCLANG_DIR="$WORKDIR/ZyClang/clang+llvm-17.0.1-aarch64-linux-gnu/bin"
 
 # Kernel Source
