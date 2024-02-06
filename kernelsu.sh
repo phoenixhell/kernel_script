@@ -101,12 +101,24 @@ git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCHE $KERNEL_DIR
 cd $KERNEL_DIR
 
 
-# CLANG CONFIG PATCH
-msg " • 🌸 Clang Config Patch 🌸 "
-sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' $DEVICE_DEFCONFIG_FILE 
-sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' $DEVICE_DEFCONFIG_FILE
-sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
-echo "❗❗❗➡️DONE⬅️❗❗❗"
+# CLANG GCC CONFIG PATCH
+clang_gcc_patch() {
+	if [ $COMPILER == "proton_clang" ]; then
+		echo -e "Cloning Proton Clang"
+		msg " • 🌸 Clang Config Patch 🌸 "
+		sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' $DEVICE_DEFCONFIG_FILE 
+		sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' $DEVICE_DEFCONFIG_FILE
+		sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
+  	fi
+   	if [ $COMPILER == "aosp_clang" ]; then
+		echo -e "Cloning Proton Clang"
+  		sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' $DEVICE_DEFCONFIG_FILE
+		sed -i 's/CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/g' $DEVICE_DEFCONFIG_FILE
+		sed -i 's/# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/g' $DEVICE_DEFCONFIG_FILE
+  	fi
+}
+clang_gcc_patch
+echo "❗❗❗➡️CONFIG PATCH DONE⬅️❗❗❗"
 
 msg " • 🌸 Patching KernelSU 🌸 "
 curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s main
