@@ -17,7 +17,7 @@ clang_clone() {
 		echo -e "Cloning Proton Clang"
 		ZYCLANG_DLINK="https://huggingface.co/phoenix-1708/MAJIC/resolve/main/proton_clang.tar.gz"
 	fi
-	if [ $COMPILER == "AOSP_clang" ]; then
+	if [ $COMPILER == "aosp_clang" ]; then
 		echo -e "Cloning AOSP Clang"
 		ZYCLANG_DLINK="https://huggingface.co/phoenix-1708/MAJIC/resolve/main/toolchain.tar.gz"
 	fi
