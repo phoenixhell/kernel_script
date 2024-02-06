@@ -9,6 +9,7 @@ WORKDIR="$(pwd)"
 # ZyClang
 # ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230725-release/Clang-17.0.0-20230725.tar.gz"
 # ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240203-release/Clang-19.0.0git-20240203.tar.gz"
+ZYCLANG_DLINK="https://github.com/llvm/llvm-project/releases/download/llvmorg-17.0.6/clang+llvm-17.0.6-aarch64-linux-gnu.tar.xz"
 
 ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
 
@@ -45,10 +46,16 @@ cd $WORKDIR
 # Download ZyClang
 msg " • 🌸 Work on $WORKDIR 🌸"
 msg " • 🌸 Cloning Toolchain 🌸 "
-#mkdir -p ZyClang
+mkdir -p ZyClang 
+# DEFAULT TAR.GZ
 #aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 #tar -C ZyClang/ -zxvf ZyClang.tar.gz
 #rm -rf ZyClang.tar.gz
+
+# IF TAR.XZ
+aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.xz
+tar -C ZyClang/ -zxvf ZyClang.tar.xz
+rm -rf ZyClang.tar.xz
 
 # SKIDDIE CLANG
 #aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.zst
@@ -56,7 +63,7 @@ msg " • 🌸 Cloning Toolchain 🌸 "
 #rm -rf ZyClang.tar.zst
 
 # PROTON CLANG
-git clone https://gitlab.com/fiqri19102002/proton_clang-mirror.git -b main $WORKDIR/ZyClang
+# git clone https://gitlab.com/fiqri19102002/proton_clang-mirror.git -b main $WORKDIR/ZyClang
 
 # CLANG LLVM VERSIONS
 CLANG_VERSION="$($ZYCLANG_DIR/clang --version | head -n 1)"
@@ -118,7 +125,8 @@ msg " • 🌸 LINUX KERNEL VERSION : $KERNEL_VERSION 🌸 "
 make O=out $args -j"$(nproc --all)"
 
 msg " • 🌸 Packing Kernel 🌸 "
-# INBUILT PACKING METHOD
+
+# INBUILT PACKING METHOD - DEFAULT
 #cd $WORKDIR
 #git clone --depth=1 $ANYKERNEL3_GIT -b $ANYKERNEL3_BRANCHE $WORKDIR/Anykernel3
 #cd $WORKDIR/Anykernel3
