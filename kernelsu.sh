@@ -115,6 +115,7 @@ clang_gcc_patch() {
   		sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' $DEVICE_DEFCONFIG_FILE
 		sed -i 's/CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/g' $DEVICE_DEFCONFIG_FILE
 		sed -i 's/# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/g' $DEVICE_DEFCONFIG_FILE
+  		sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
   	fi
 }
 clang_gcc_patch
