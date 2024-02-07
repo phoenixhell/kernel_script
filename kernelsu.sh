@@ -85,7 +85,7 @@ env_setup() {
     	fi
      	if [ $COMPILER == "aosp_clang" ]; then
 		echo -e "Cloning Proton Clang"
-  		ZYCLANG_DIR="$WORKDIR/ZyClang/clang-r498229b/bin"
+  		ZYCLANG_DIR="$WORKDIR/ZyClang/clang-r428724/bin"
 		GCC64="$WORKDIR/ZyClang/aarch64-linux-android-4.9/bin"
 		GCC32="$WORKDIR/ZyClang/arm-linux-androideabi-4.9/bin"
   	fi
