@@ -12,3 +12,4 @@ apt-get -y install openjdk-11-jdk openjdk-11-jre python-is-python3 openssl kmod 
 apt-get -y install gawk gcc glibc-source
 apt-get -y install libc6 libc6-dev libc6-i386 libc6-dev-i386
 apt-get -y install llvm clang-tools lld
+apt-get -y install gcc-aarch64-linux-gnu
