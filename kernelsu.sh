@@ -133,9 +133,9 @@ clang_gcc_patch() {
   	fi
    	if [ $COMPILER == "aosp_clang" ]; then
 		echo -e "Cloning Proton Clang"
-  		sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' $DEVICE_DEFCONFIG_FILE
-		sed -i 's/CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/g' $DEVICE_DEFCONFIG_FILE
-		sed -i 's/# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/g' $DEVICE_DEFCONFIG_FILE
+  		#sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' $DEVICE_DEFCONFIG_FILE
+		#sed -i 's/CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/g' $DEVICE_DEFCONFIG_FILE
+		#sed -i 's/# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/g' $DEVICE_DEFCONFIG_FILE
   		sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
     		sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' $DEVICE_DEFCONFIG_FILE 
 		sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' $DEVICE_DEFCONFIG_FILE
