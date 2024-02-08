@@ -30,13 +30,13 @@ clang_clone() {
 	fi
  	if [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
 		echo -e "Cloning AOSP Clang"
-  		$ZYCLANG_DLINK="https://gitlab.com/playground7942706/aosp_clang"
-    		$BRANCH="main"
+  		ZYCLANG_DLINK="https://gitlab.com/playground7942706/aosp_clang"
+    		BRANCH="main"
 	fi
  	if [ $COMPILER == "sd_clang" ] && [ "$GIT_CLANG" = true ]; then
 		echo -e "Cloning SD_Clang"
-  		$ZYCLANG_DLINK="https://gitlab.com/ZyCromerZ/sdclang-16.0.2.0.git"
-    		$BRANCH="main"
+  		ZYCLANG_DLINK="https://gitlab.com/ZyCromerZ/sdclang-16.0.2.0.git"
+    		BRANCH="main"
 	fi
 }
 clang_clone
