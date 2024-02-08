@@ -185,13 +185,14 @@ compile() {
 	            OBJDUMP=llvm-objdump \
 	            STRIP=llvm-strip"
 	fi 
-	if [ $COMPILER == "aosp_clang" ]; then 		 #   CC=clang \
+	if [ $COMPILER == "aosp_clang" ]; then 	
 		args="PATH=$ZYCLANG_DIR:$GCC64:$GCC32:$PATH \
 		    ARCH=arm64 \
       		    SUBARCH=ARM64 \
+	    	    CC=clang \
 	            CLANG_TRIPLE=aarch64-linux-gnu- \
 		    CROSS_COMPILE=aarch64-linux-android- \
-		    CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
+		    CROSS_COMPILE_ARM32=arm-linux-androideabi- \
 		    AR=llvm-ar \
 		    NM=llvm-nm \
 		    OBJCOPY=llvm-objcopy \
