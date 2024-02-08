@@ -190,6 +190,16 @@ compile() {
       		    SUBARCH=ARM64 \
 	    	    CC=clang \
 	            CLANG_TRIPLE=aarch64-linux-gnu- \
+		    LLVM=1"
+    fi
+}
+compile
+
+: 'args="PATH=$ZYCLANG_DIR:$GCC64:$GCC32:$PATH \
+		    ARCH=arm64 \
+      		    SUBARCH=ARM64 \
+	    	    CC=clang \
+	            CLANG_TRIPLE=aarch64-linux-gnu- \
 		    CROSS_COMPILE=aarch64-linux-android- \
 		    CROSS_COMPILE_ARM32=arm-linux-androideabi- \
 		    AR=llvm-ar \
@@ -200,10 +210,7 @@ compile() {
 		    OBJSIZE=llvm-size \
 	            STRIP=llvm-strip \
 		    HOSTCC=clang \
-		    HOSTCXX=clang++"
-    fi
-}
-compile
+		    HOSTCXX=clang++"  '
 
 # LINUX KERNEL VERSION
 rm -rf out
