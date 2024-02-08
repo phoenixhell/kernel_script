@@ -7,8 +7,9 @@
 WORKDIR="$(pwd)"
 
 # COMPILER
-COMPILER=aosp_clang
+#COMPILER=aosp_clang
 #COMPILER=proton_clang
+COMPILER=sd_clang
 
 # CLANG SOURCE
 GIT_CLANG=true
@@ -29,6 +30,13 @@ clang_clone() {
 	fi
  	if [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
 		echo -e "Cloning AOSP Clang"
+  		$ZYCLANG_DLINK="https://gitlab.com/playground7942706/aosp_clang"
+    		$BRANCH="main"
+	fi
+ 	if [ $COMPILER == "sd_clang" ] && [ "$GIT_CLANG" = true ]; then
+		echo -e "Cloning SD_Clang"
+  		$ZYCLANG_DLINK="https://gitlab.com/ZyCromerZ/sdclang-16.0.2.0.git"
+    		$BRANCH="main"
 	fi
 }
 clang_clone
@@ -89,7 +97,11 @@ clang_setup() {
 	fi
  	if [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
   		echo -e "Cloning AOSP Clang"
-    		git clone --depth=1 https://gitlab.com/playground7942706/aosp_clang -b main ZyClang
+    		git clone --depth=1 $ZYCLANG_DLINK -b $BRANCH ZyClang
+      	fi
+       	if [ $COMPILER == "sd_clang" ] && [ "$GIT_CLANG" = true ]; then
+  		echo -e "Cloning SD_Clang"
+    		git clone --depth=1 $ZYCLANG_DLINK -b $BRANCH ZyClang
       	fi
 }
 clang_setup
@@ -109,6 +121,10 @@ env_setup() {
     		GCC64="$WORKDIR/ZyClang/aarch64-linux-android-4.14/bin"
 		GCC32="$WORKDIR/ZyClang/arm-linux-androideabi-4.14/bin"
   	fi
+   	if [ $COMPILER == "sd_clang" ]; then
+		echo -e "Cloning SD_Clang"
+  		ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
+    	fi
 }
 env_setup
 
@@ -138,6 +154,13 @@ clang_gcc_patch() {
   		sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
     		sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' $DEVICE_DEFCONFIG_FILE 
 		sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' $DEVICE_DEFCONFIG_FILE
+  	fi
+   	if [ $COMPILER == "sd_clang" ]; then
+		echo -e "Cloning Proton Clang"
+		msg " • 🌸 Clang Config Patch 🌸 "
+		#sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' $DEVICE_DEFCONFIG_FILE 
+		#sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' $DEVICE_DEFCONFIG_FILE
+		#sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
   	fi
 }
 clang_gcc_patch
@@ -191,7 +214,15 @@ compile() {
 	    	    CC=clang \
 	            CLANG_TRIPLE=aarch64-linux-gnu- \
 		    LLVM=1"
-    fi
+    	fi
+     	if [ $COMPILER == "sd_clang" ]; then 	
+		args="PATH=$ZYCLANG_DIR:$PATH \
+		    	ARCH=arm64 \
+      		    	SUBARCH=ARM64 \
+			CROSS_COMPILE=aarch64-linux-gnu- \
+			CROSS_COMPILE_ARM32=arm-linux-gnueabi-
+   			CC=clang"
+    	fi
 }
 compile
 
