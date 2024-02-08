@@ -29,7 +29,6 @@ clang_clone() {
 	fi
  	if [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
 		echo -e "Cloning AOSP Clang"
-		ZYCLANG_DLINK="https://gitlab.com/playground7942706/aosp_clang.git"
 	fi
 }
 clang_clone
