@@ -10,16 +10,26 @@ WORKDIR="$(pwd)"
 COMPILER=aosp_clang
 #COMPILER=proton_clang
 
+# CLANG SOURCE
+GIT_CLANG=true
 
 # ZyClang
 clang_clone() {
-	if [ $COMPILER == "proton_clang" ]; then
+	if [ $COMPILER == "proton_clang" ] && [ "$GIT_CLANG" = false ]; then
 		echo -e "Cloning Proton Clang"
 		ZYCLANG_DLINK="https://huggingface.co/phoenix-1708/MAJIC/resolve/main/proton_clang.tar.gz"
 	fi
-	if [ $COMPILER == "aosp_clang" ]; then
+ 	if [ $COMPILER == "proton_clang" ] && [ "$GIT_CLANG" = true ]; then
+		echo -e "Cloning AOSP Clang"
+		ZYCLANG_DLINK="link here"
+	fi
+	if [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
 		echo -e "Cloning AOSP Clang"
 		ZYCLANG_DLINK="https://huggingface.co/phoenix-1708/MAJIC/resolve/main/toolchain.tar.gz"
+	fi
+ 	if [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
+		echo -e "Cloning AOSP Clang"
+		ZYCLANG_DLINK="https://gitlab.com/playground7942706/aosp_clang.git"
 	fi
 }
 clang_clone
@@ -60,20 +70,28 @@ msg " • 🌸 Cloning Toolchain 🌸 "
 
 # DEFAULT TAR.GZ
 clang_setup() {
-	if [ $COMPILER == "proton_clang" ]; then
+	if [ $COMPILER == "proton_clang" ] && [ "$GIT_CLANG" = false ]; then
 		echo -e "Cloning Proton Clang"
 		mkdir -p ZyClang
 		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 		tar -C ZyClang/ -zxvf ZyClang.tar.gz
 		rm -rf ZyClang.tar.gz
 	fi
-	if [ $COMPILER == "aosp_clang" ]; then
+ 	if [ $COMPILER == "proton_clang" ] && [ "$GIT_CLANG" = true ]; then
+  		echo -e "Cloning Proton Clang"
+    		git clone --depth=1 link -b branch ZyClang
+      	fi
+	if [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
 		echo -e "Cloning AOSP Clang"
 		mkdir -p ZyClang
 		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 		tar -C ZyClang/ -zxvf ZyClang.tar.gz
 		rm -rf ZyClang.tar.gz
 	fi
+ 	if [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
+  		echo -e "Cloning AOSP Clang"
+    		git clone --depth=1 https://gitlab.com/playground7942706/aosp_clang -b main ZyClang
+      	fi
 }
 clang_setup
 
@@ -84,10 +102,13 @@ env_setup() {
   		ZYCLANG_DIR="$WORKDIR/ZyClang/bin"
     	fi
      	if [ $COMPILER == "aosp_clang" ]; then
-		echo -e "Cloning Proton Clang"
-  		ZYCLANG_DIR="$WORKDIR/ZyClang/clang-r428724/bin"
-		GCC64="$WORKDIR/ZyClang/aarch64-linux-android-4.9/bin"
-		GCC32="$WORKDIR/ZyClang/arm-linux-androideabi-4.9/bin"
+		echo -e "Cloning AOSP Clang"
+  		#ZYCLANG_DIR="$WORKDIR/ZyClang/clang-r428724/bin"
+		#GCC64="$WORKDIR/ZyClang/aarch64-linux-android-4.9/bin"
+		#GCC32="$WORKDIR/ZyClang/arm-linux-androideabi-4.9/bin"
+  		ZYCLANG_DIR="$WORKDIR/ZyClang/clang-r487747c/bin"
+    		GCC64="$WORKDIR/ZyClang/aarch64-linux-android-4.14/bin"
+		GCC32="$WORKDIR/ZyClang/arm-linux-androideabi-4.14/bin"
   	fi
 }
 env_setup
@@ -165,6 +186,7 @@ compile() {
 	if [ $COMPILER == "aosp_clang" ]; then
 		args="PATH=$ZYCLANG_DIR:$GCC64:$GCC32:$PATH \
 		    ARCH=arm64 \
+      		    SUBARCH=ARM64 \
 	            CLANG_TRIPLE=aarch64-linux-gnu- \
 		    CROSS_COMPILE=aarch64-linux-android- \
 		    CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
