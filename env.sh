@@ -13,3 +13,26 @@ apt-get -y install gawk gcc glibc-source
 apt-get -y install libc6 libc6-dev libc6-i386 libc6-dev-i386
 apt-get -y install llvm clang-tools lld
 apt-get -y install gcc-aarch64-linux-gnu
+apt-get -y install bc \
+            binutils-dev \
+            bison \
+            build-essential \
+            ca-certificates \
+            ccache \
+            clang \
+            cmake \
+            curl \
+            file \
+            flex \
+            git \
+            libelf-dev \
+            libssl-dev \
+            libstdc++-$(apt list libstdc++6 2>/dev/null | grep -Eos '[0-9]+\.[0-9]+\.[0-9]+' | head -1 | cut -d . -f 1)-dev \
+            lld \
+            make \
+            ninja-build \
+            python3-dev \
+            texinfo \
+            u-boot-tools \
+            xz-utils \
+            zlib1g-dev
