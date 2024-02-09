@@ -30,8 +30,8 @@ clang_clone() {
 	fi
  	if [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
 		echo -e "Cloning AOSP Clang"
-  		ZYCLANG_DLINK="https://gitlab.com/playground7942706/aosp_clang"
-    		BRANCH="main"
+  		ZYCLANG_DLINK="https://github.com/pkm774/android-kernel-tools"
+    		BRANCH="tools"
 	fi
  	if [ $COMPILER == "sd_clang" ] && [ "$GIT_CLANG" = true ]; then
 		echo -e "Cloning SD_Clang"
@@ -117,9 +117,10 @@ env_setup() {
   		#ZYCLANG_DIR="$WORKDIR/ZyClang/clang-r428724/bin"
 		#GCC64="$WORKDIR/ZyClang/aarch64-linux-android-4.9/bin"
 		#GCC32="$WORKDIR/ZyClang/arm-linux-androideabi-4.9/bin"
-  		ZYCLANG_DIR="$WORKDIR/ZyClang/clang-r487747c/bin"
-    		GCC64="$WORKDIR/ZyClang/aarch64-linux-android-4.14/bin"
-		GCC32="$WORKDIR/ZyClang/arm-linux-androideabi-4.14/bin"
+  		ZYCLANG_DIR="$WORKDIR/ZyClang/clang/host/linux-x86/clang-r428724/bin"
+    		GCC64="$WORKDIR/ZyClang/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin"
+		GCC32="$WORKDIR/ZyClang/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin"
+  		export LD_LIBRARY_PATH="tools/clang/host/linux-x86/clang-r428724/lib64:$LD_LIBRARY_PATH"
   	fi
    	if [ $COMPILER == "sd_clang" ]; then
 		echo -e "Cloning SD_Clang"
