@@ -120,7 +120,7 @@ env_setup() {
   		ZYCLANG_DIR="$WORKDIR/ZyClang/clang/host/linux-x86/clang-r428724/bin"
     		GCC64="$WORKDIR/ZyClang/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin"
 		GCC32="$WORKDIR/ZyClang/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin"
-  		export LD_LIBRARY_PATH="tools/clang/host/linux-x86/clang-r428724/lib64:$LD_LIBRARY_PATH"
+  		export LD_LIBRARY_PATH="$WORKDIR/ZyClang/clang/host/linux-x86/clang-r428724/lib64:$LD_LIBRARY_PATH"
   	fi
    	if [ $COMPILER == "sd_clang" ]; then
 		echo -e "Cloning SD_Clang"
