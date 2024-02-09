@@ -210,10 +210,12 @@ compile() {
 	if [ $COMPILER == "aosp_clang" ]; then 	
 		args="PATH=$ZYCLANG_DIR:$GCC64:$GCC32:$PATH \
   			ARCH=arm64 \
-			SUBARCH=ARM64 \
    			CLANG_TRIPLE=aarch64-linux-gnu- \
 			CROSS_COMPILE=aarch64-linux-android- \
+			CROSS_COMPILE_COMPAT=arm-linux-androideabi- \
 			CC=clang \
+			LLVM=1 \
+			LLVM_IAS=1 \
 			AR=llvm-ar \
 			NM=llvm-nm \
 			LD=ld.lld \
