@@ -7,9 +7,9 @@
 WORKDIR="$(pwd)"
 
 # COMPILER
-#COMPILER=aosp_clang
+COMPILER=aosp_clang
 #COMPILER=proton_clang
-COMPILER=sd_clang
+#COMPILER=sd_clang
 
 # CLANG SOURCE
 GIT_CLANG=true
