@@ -23,7 +23,7 @@ DEFCONFIG=vendor/sweet_defconfig
 
 # Set common environment
 export KBUILD_BUILD_USER="Harikumar"
-
+export TELEGRAM_TOKEN="$TELEGRAM_TOKEN"
 #
 # Set if do you use GCC or clang compiler
 # Default is clang compiler
