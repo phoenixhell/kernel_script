@@ -29,6 +29,7 @@ jobs:
           sudo bash env.sh
 
       - name: Start KSU building...
+        env: ${{ secrets.TELEGRAM_TOKEN }}
         run: |
           cd $GITHUB_WORKSPACE
           sudo bash build.sh            #          sudo bash kernelsu.sh
