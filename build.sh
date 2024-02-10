@@ -15,10 +15,10 @@ KERNEL_DIR="$WORKDIR/Phoenix"
 IMG_DIR="$KERNEL_DIR"/out/arch/arm64/boot
 msg " • 🌸 Echo TG Token 🌸 "
 TOKEN=${TG_TOKEN}
-echo "${TG_TOKEN}"
-echo "${TG_TOKEN}"
-echo "${TG_TOKEN}"
-echo "${TG_TOKEN}"
+echo "${TOKEN}"
+echo "${TOKEN}"
+echo "${TOKEN}"
+echo "${TOKEN}"
 
 #####git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCH $KERNEL_DIR
 
