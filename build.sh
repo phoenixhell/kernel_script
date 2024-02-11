@@ -18,6 +18,8 @@ git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCH $KERNEL_DIR
 
 cd $KERNEL_DIR
 
+make clean && make mrproper
+
 # Get defconfig file
 DEFCONFIG=vendor/sweet_defconfig
 
