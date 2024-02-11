@@ -30,10 +30,11 @@ jobs:
 
       - name: Start KSU building...
         env:
-           TG_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+           TG_TELEGRAM_TOKEN: ${{ secrets.TG_TELEGRAM_TOKEN }}
         run: |
           cd $GITHUB_WORKSPACE
           echo "${{ secrets.TG_TELEGRAM_TOKEN }}" >> build.sh
+          echo "$TG_TELEGRAM_TOKEN" >> build.sh
           sudo bash build.sh            #          sudo bash kernelsu.sh
           sudo chmod -R 0777 ./*
           echo "RELEASE_NAME=$(cat "$GITHUB_WORKSPACE/out/RELEASETITLE.txt")" >> $GITHUB_ENV
