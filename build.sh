@@ -165,16 +165,16 @@ clone() {
 		# Get path and compiler string
 		KBUILD_COMPILER_STRING=$("$GCC64_DIR"/bin/aarch64-none-elf-gcc --version | head -n 1)
 		PATH=$GCC64_DIR/bin/:$GCC32_DIR/bin/:/usr/bin:$PATH
-  elif [ $COMPILER == "aosp_clang" ]; then
+  	elif [ $COMPILER == "aosp_clang" ]; then
 		# Clone AOSP clang
-    git clone https://github.com/pkm774/android-kernel-tools.git -b tools --depth=1 clang
+    		git clone https://github.com/pkm774/android-kernel-tools.git -b tools --depth=1 clang
 		# Set environment for clang
-    TC_DIR=$KERNEL_DIR/clang/clang/host/linux-x86/clang-r428724
+		TC_DIR=$KERNEL_DIR/clang/clang/host/linux-x86/clang-r428724
 		GCC64_DIR=$KERNEL_DIR/clang/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
 		GCC32_DIR=$KERNEL_DIR/clang/gcc/linux-x86/arm/arm-linux-androideabi-4.9
 		# Get path and compiler string
 		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
-    PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
+    		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
 	fi
 
 	export PATH KBUILD_COMPILER_STRING
@@ -212,6 +212,22 @@ compile() {
 	make O=out "$DEFCONFIG"
 	BUILD_START=$(date +"%s")
 	if [ $COMPILER == "clang" ]; then
+		if [ $LOCALBUILD == "0" ]; then
+			make -j"$PROCS" O=out \
+					CROSS_COMPILE=aarch64-linux-gnu- \
+					LLVM=1
+		elif [ $LOCALBUILD == "1" ]; then
+			make -j"$PROCS" O=out \
+					CROSS_COMPILE=aarch64-linux-gnu- \
+					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+					CC=clang \
+					AR=llvm-ar \
+					NM=llvm-nm \
+					LD=ld.lld \
+					OBJDUMP=llvm-objdump \
+					STRIP=llvm-strip
+		fi
+  	elif [ $COMPILER == "aosp_clang" ]; then
 		if [ $LOCALBUILD == "0" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
