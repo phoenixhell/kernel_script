@@ -26,14 +26,13 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           pwd
-       #   sudo bash env.sh
+          sudo bash env.sh
 
       - name: Start KSU building...
         env:
            TELEGRAM_TOKEN: ${{ vars.TELEGRAM_TOKEN }}
         run: |
           cd $GITHUB_WORKSPACE
-          echo "${{ secrets.TELEGRAM_TOKEN }}" >> $GITHUB_ENV
           sudo bash build.sh            #          sudo bash kernelsu.sh
           sudo chmod -R 0777 ./*
           echo "RELEASE_NAME=$(cat "$GITHUB_WORKSPACE/out/RELEASETITLE.txt")" >> $GITHUB_ENV
