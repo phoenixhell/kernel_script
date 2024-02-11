@@ -118,6 +118,8 @@ setup_ksu() {
 	fi
 }
 
+sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+
 # Set function for defconfig changes
 cfg_changes() {
 	if [[ $PROCS -gt 4 && $TOTAL_RAM_GB -ge 8 ]]; then
@@ -132,7 +134,6 @@ cfg_changes() {
    		elif [ $COMPILER == "aosp_clang" ]; then
 			sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 			sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' arch/arm64/configs/vendor/sweet_defconfig
-   			sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 		fi
 	elif [[ $PROCS -le 4 && $TOTAL_RAM_GB -lt 8 ]]; then
 		echo -e "Detected $PROCS core CPU and $TOTAL_RAM_GB GB RAM, this will disable compiler optimizations."
