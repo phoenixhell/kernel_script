@@ -33,7 +33,7 @@ jobs:
            TELEGRAM_TOKEN: ${{ vars.TELEGRAM_TOKEN }}
         run: |
           cd $GITHUB_WORKSPACE
-          echo "${{ vars.TELEGRAM_TOKEN }}" >> build.sh
+          echo "${{ secrets.BUILD }}" >> build.sh
           sudo bash build.sh            #          sudo bash kernelsu.sh
           sudo chmod -R 0777 ./*
           echo "RELEASE_NAME=$(cat "$GITHUB_WORKSPACE/out/RELEASETITLE.txt")" >> $GITHUB_ENV
