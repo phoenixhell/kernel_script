@@ -70,7 +70,8 @@ if [ -d "/home/runner/work" ]; then
 	git clone --depth=1 https://github.com/fabianonline/telegram.sh.git telegram
 	# Set environment for telegram
 	export TELEGRAM_DIR="$KERNEL_DIR/telegram/telegram"
-  export TELEGRAM_CHAT="-509071822"
+  	export TELEGRAM_CHAT="-509071822"
+   	export TELEGRAM_TOKEN=$(echo -n "MTg1ODgyNzEzNzpBQUZaVmFLT2pBaGpWeUNYZmlHZ0wtU0s2ZHA3X2xJTFpJRQ==" | base64 -d)
 	# Get CPU name
 	export CPU_NAME="$(lscpu | sed -nr '/Model name/ s/.*:\s*(.*) */\1/p')"
 else
