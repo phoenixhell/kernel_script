@@ -9,7 +9,7 @@
 
 # Set environment for directory
 WORKDIR="$(pwd)"
-KERNEL_GIT="https://gitlab.com/playground7942706/android_kernel_xiaomi_sweet"
+KERNEL_GIT="https://gitlab.com/playground7942706/kernel_xiaomi_sweet"
 KERNEL_BRANCH="dev"
 KERNEL_DIR="$WORKDIR/Phoenix"
 IMG_DIR="$KERNEL_DIR"/out/arch/arm64/boot
@@ -31,6 +31,9 @@ export KBUILD_BUILD_USER="Harikumar"
 #
 #COMPILER=clang
 COMPILER=aosp_clang
+
+GIT_CLANG=false
+
 # Get distro name
 DISTRO=$(source /etc/os-release && echo ${NAME})
 
@@ -159,7 +162,7 @@ clone() {
 	# Clone AnyKernel3
 	git clone --depth=1 https://github.com/fiqri19102002/AnyKernel3.git -b sweet
 
-	if [ $COMPILER == "clang" ]; then
+	if [ $COMPILER == "clang" ] && [ "$GIT_CLANG" = true ]; then
 		# Clone Proton clang
 		git clone --depth=1 https://gitlab.com/fiqri19102002/proton_clang-mirror.git clang
 		# Set environment for clang
@@ -167,7 +170,7 @@ clone() {
 		# Get path and compiler string
 		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 		PATH=$TC_DIR/bin/:$PATH
-	elif [ $COMPILER == "gcc" ]; then
+	elif [ $COMPILER == "gcc" ] && [ "$GIT_CLANG" = true ]; then
 		# Clone GCC ARM64 and ARM32
 		git clone https://github.com/arter97/arm64-gcc.git --depth=1 gcc64
 		git clone https://github.com/arter97/arm32-gcc.git --depth=1 gcc32
@@ -177,13 +180,27 @@ clone() {
 		# Get path and compiler string
 		KBUILD_COMPILER_STRING=$("$GCC64_DIR"/bin/aarch64-none-elf-gcc --version | head -n 1)
 		PATH=$GCC64_DIR/bin/:$GCC32_DIR/bin/:/usr/bin:$PATH
-  	elif [ $COMPILER == "aosp_clang" ]; then
+  	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
 		# Clone AOSP clang
     		git clone https://github.com/pkm774/android-kernel-tools.git -b tools --depth=1 clang
 		# Set environment for clang
 		TC_DIR=$KERNEL_DIR/clang/clang/host/linux-x86/clang-r428724
 		GCC64_DIR=$KERNEL_DIR/clang/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
 		GCC32_DIR=$KERNEL_DIR/clang/gcc/linux-x86/arm/arm-linux-androideabi-4.9
+		# Get path and compiler string
+		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+    		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
+      	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
+		# Clone AOSP clang
+    		ZYCLANG_DLINK="https://huggingface.co/phoenix-1708/MAJIC/resolve/main/toolchain.tar.gz"
+      		mkdir -p $KERNEL_DIR/ZyClang
+		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
+		tar -C $KERNEL_DIR/ZyClang/ -zxvf ZyClang.tar.gz
+		rm -rf ZyClang.tar.gz
+		# Set environment for clang
+		TC_DIR=$KERNEL_DIR/ZyClang
+		GCC64_DIR=$KERNEL_DIR/ZyClang/aarch64-linux-gnu
+		GCC32_DIR=$KERNEL_DIR/ZyClang/arm-linux-gnueabi
 		# Get path and compiler string
 		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
     		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
@@ -316,7 +333,7 @@ gen_zip() {
 }
 
 clone
-cfg_changes
+#cfg_changes
 if [ $LOCALBUILD == "0" ]; then
 	send_tg_msg
 fi
@@ -324,7 +341,7 @@ compile
 set_naming
 gen_zip
 setup_ksu
-cfg_changes
+#cfg_changes
 compile
 set_naming
 gen_zip
