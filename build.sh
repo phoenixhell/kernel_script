@@ -276,7 +276,7 @@ compile() {
 		if [ $LOCALBUILD == "0" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
-     					CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+     					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
 					LLVM=1
 		elif [ $LOCALBUILD == "1" ]; then
 			make -j"$PROCS" O=out \
