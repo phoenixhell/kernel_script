@@ -256,10 +256,27 @@ compile() {
 					OBJDUMP=llvm-objdump \
 					STRIP=llvm-strip
 		fi
-  	elif [ $COMPILER == "aosp_clang" ]; then
+  	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
 		if [ $LOCALBUILD == "0" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
+					LLVM=1
+		elif [ $LOCALBUILD == "1" ]; then
+			make -j"$PROCS" O=out \
+					CROSS_COMPILE=aarch64-linux-gnu- \
+					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+					CC=clang \
+					AR=llvm-ar \
+					NM=llvm-nm \
+					LD=ld.lld \
+					OBJDUMP=llvm-objdump \
+					STRIP=llvm-strip
+		fi
+  	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
+		if [ $LOCALBUILD == "0" ]; then
+			make -j"$PROCS" O=out \
+					CROSS_COMPILE=aarch64-linux-gnu- \
+     					CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
 					LLVM=1
 		elif [ $LOCALBUILD == "1" ]; then
 			make -j"$PROCS" O=out \
