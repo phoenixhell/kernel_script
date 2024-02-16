@@ -192,11 +192,11 @@ clone() {
     		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
       	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
 		# Clone AOSP clang
-    		ZYCLANG_DLINK="https://huggingface.co/phoenix-1708/MAJIC/resolve/main/toolchain.tar.gz"
+    		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240216-release/Clang-19.0.0git-20240216.tar.gz"
       		mkdir -p $KERNEL_DIR/ZyClang
 		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 		tar -C $KERNEL_DIR/ZyClang/ -zxvf ZyClang.tar.gz
-		rm -rf ZyClang.tar.gz
+		rm -rf $KERNEL_DIR/ZyClang.tar.gz
 		# Set environment for clang
 		TC_DIR=$KERNEL_DIR/ZyClang
 		GCC64_DIR=$KERNEL_DIR/ZyClang/aarch64-linux-gnu
