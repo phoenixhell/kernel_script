@@ -264,7 +264,7 @@ compile() {
 		elif [ $LOCALBUILD == "1" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
-					CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
+					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
 					CC=clang \
 					AR=llvm-ar \
 					NM=llvm-nm \
@@ -276,7 +276,7 @@ compile() {
 		if [ $LOCALBUILD == "0" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
-     					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+     					CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
 					LLVM=1 \
      					CC=clang \
 					AR=llvm-ar \
@@ -287,7 +287,7 @@ compile() {
 		elif [ $LOCALBUILD == "1" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
-					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+					CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
 					CC=clang \
 					AR=llvm-ar \
 					NM=llvm-nm \
