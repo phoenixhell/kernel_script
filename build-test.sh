@@ -138,7 +138,7 @@ cfg_changes() {
 			sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' arch/arm64/configs/vendor/sweet_defconfig
    			sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 		fi
-  elif [[ $PROCS -ge 4 && $TOTAL_RAM_GB -ge 8 ]]; then
+  	elif [[ $PROCS -ge 4 && $TOTAL_RAM_GB -ge 8 ]]; then
 		echo -e "Detected $PROCS core CPU and $TOTAL_RAM_GB GB RAM, this will disable compiler optimizations."
 		if [ $COMPILER == "aosp_clang" ]; then
 			sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' arch/arm64/configs/vendor/sweet_defconfig
@@ -180,7 +180,7 @@ clone() {
 		# Get path and compiler string
 		KBUILD_COMPILER_STRING=$("$GCC64_DIR"/bin/aarch64-none-elf-gcc --version | head -n 1)
 		PATH=$GCC64_DIR/bin/:$GCC32_DIR/bin/:/usr/bin:$PATH
-  elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
+  	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
 		# Clone AOSP clang
     		git clone https://gitlab.com/ZyCromerZ/sdclang-16.1.0.1.git -b main --depth=1 clang
 		# Set environment for clang
@@ -190,10 +190,10 @@ clone() {
     		# Get path and compiler string
     		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
     		PATH=$TC_DIR/bin/:$PATH
-  elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
+ 	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
 		# Clone AOSP clang
     		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240216-release/Clang-19.0.0git-20240216.tar.gz"
-      	mkdir -p $KERNEL_DIR/ZyClang
+      		mkdir -p $KERNEL_DIR/ZyClang
     		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
     		tar -C $KERNEL_DIR/ZyClang/ -zxvf ZyClang.tar.gz
     		rm -rf $KERNEL_DIR/ZyClang.tar.gz
@@ -260,7 +260,13 @@ compile() {
 		if [ $LOCALBUILD == "0" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
-					LLVM=1
+					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+					CC=clang \
+					AR=llvm-ar \
+					NM=llvm-nm \
+					LD=ld.lld \
+					OBJDUMP=llvm-objdump \
+					STRIP=llvm-strip
 		elif [ $LOCALBUILD == "1" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
