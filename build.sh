@@ -277,7 +277,13 @@ compile() {
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
      					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
-					LLVM=1
+					LLVM=1 \
+     					CC=clang \
+					AR=llvm-ar \
+					NM=llvm-nm \
+					LD=ld.lld \
+					OBJDUMP=llvm-objdump \
+					STRIP=llvm-strip
 		elif [ $LOCALBUILD == "1" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
