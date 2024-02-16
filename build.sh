@@ -277,7 +277,6 @@ compile() {
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
      					CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
-					LLVM=1 \
      					CC=clang \
 					AR=llvm-ar \
 					NM=llvm-nm \
