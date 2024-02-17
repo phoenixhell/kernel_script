@@ -30,7 +30,7 @@ export KBUILD_BUILD_USER="Harikumar"
 # Set if do you use GCC or clang compiler
 # Default is clang compiler
 #
-COMPILER=clang
+COMPILER=aosp_clang
 
 GIT_CLANG=false
 # Get distro name
@@ -118,11 +118,11 @@ clone() {
 		GCC64_DIR=$KERNEL_DIR/clang/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
 		GCC32_DIR=$KERNEL_DIR/clang/gcc/linux-x86/arm/arm-linux-androideabi-4.9
 		# Get path and compiler string
-		KBUILD_COMPILER_STRING=$("$GCC64_DIR"/bin/aarch64-elf-gcc --version | head -n 1)
-		PATH=$GCC64_DIR/bin/:$GCC32_DIR/bin/:/usr/bin:$PATH
+		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
   	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
 		# Clone GCC ARM64 and ARM32
-		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240216-release/Clang-19.0.0git-20240216.tar.gz"
+		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/14.0.6-20240212-release/Clang-14.0.6-20240212.tar.gz"
       		mkdir -p $KERNEL_DIR/ZyClang
 		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 		tar -C $KERNEL_DIR/ZyClang/ -zxvf ZyClang.tar.gz
@@ -132,8 +132,8 @@ clone() {
 		GCC64_DIR=$KERNEL_DIR/ZyClang/aarch64-linux-gnu
 		GCC32_DIR=$KERNEL_DIR/ZyClang/arm-linux-gnueabi
 		# Get path and compiler string
-		KBUILD_COMPILER_STRING=$("$GCC64_DIR"/bin/aarch64-elf-gcc --version | head -n 1)
-		PATH=$GCC64_DIR/bin/:$GCC32_DIR/bin/:/usr/bin:$PATH
+		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
 	elif [ $COMPILER == "gcc" ]; then
 		# Clone GCC ARM64 and ARM32
 		git clone https://github.com/fiqri19102002/aarch64-gcc.git -b release/elf-12 --depth=1 gcc64
