@@ -18,10 +18,10 @@ git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCH $KERNEL_DIR
 
 cd $KERNEL_DIR
 
-make clean && make mrproper
+#make clean && make mrproper
 
 # Get defconfig file
-DEFCONFIG=vendor/sweet_defconfig
+DEFCONFIG=$KERNEL_DIR/arch/arm64/config/vendor/sweet_defconfig
 
 # Set common environment
 export KBUILD_BUILD_USER="Harikumar"
