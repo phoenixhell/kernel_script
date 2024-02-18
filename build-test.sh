@@ -58,7 +58,7 @@ COMMIT_HEAD=$(git log --oneline -1)
 
 # Check directory path
 #if [ -d "/root/project" ]; then
-if [ -d "/home/runner/work" ]; then
+if [ -d "/root/project" ] || [ -d "/home/runner/work" ] || [ -d "/workspace/kernel_script" ]; then
 	echo -e "Detected Continuous Integration dir"
 	export LOCALBUILD=0
 	export KBUILD_BUILD_VERSION="1"
@@ -123,7 +123,7 @@ clone() {
 		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
   	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
 		# Clone GCC ARM64 and ARM32
-		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/14.0.6-20240212-release/Clang-14.0.6-20240212.tar.gz"
+		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240218-release/Clang-19.0.0git-20240218.tar.gz"
       		mkdir -p $KERNEL_DIR/ZyClang
 		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 		tar -C $KERNEL_DIR/ZyClang/ -zxvf ZyClang.tar.gz
@@ -174,6 +174,8 @@ compile() {
 	make O=out "$DEFCONFIG"
 	BUILD_START=$(date +"%s")
 	if [ $COMPILER == "clang" ]; then
+ 		export ARCH=arm64
+   		export SUBARCH=ARM64
 		make -j"$PROCS" O=out \
 				CROSS_COMPILE=aarch64-linux-gnu- \
 				CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
@@ -184,6 +186,8 @@ compile() {
 				OBJDUMP=llvm-objdump \
 				STRIP=llvm-strip
     	elif [ $COMPILER == "aosp_clang" ]; then
+     		export ARCH=arm64
+   		export SUBARCH=ARM64
 		make -j"$PROCS" O=out \
 				CROSS_COMPILE=aarch64-linux-gnu- \
 				CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
