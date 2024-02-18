@@ -98,6 +98,9 @@ tg_post_build() {
         "$2"
 }
 
+export ARCH=arm64
+export SUBARCH=ARM64
+
 # Set function for cloning repository
 clone() {
 	# Clone AnyKernel3
