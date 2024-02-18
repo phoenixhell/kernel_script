@@ -10,7 +10,7 @@
 # Set environment for directory
 WORKDIR="$(pwd)"
 KERNEL_GIT="https://gitlab.com/phoenix_clan/kernel_xiaomi_sweet"
-KERNEL_BRANCH="dev_test"
+KERNEL_BRANCH="dev"
 KERNEL_DIR="$WORKDIR/Phoenix"
 IMG_DIR="$KERNEL_DIR"/out/arch/arm64/boot
 
@@ -21,7 +21,7 @@ cd $KERNEL_DIR
 #make clean && make mrproper
 
 # Get defconfig file
-DEFCONFIG=$KERNEL_DIR/arch/arm64/config/vendor/sweet_defconfig
+DEFCONFIG=vendor/sweet_defconfig
 
 # Set common environment
 export KBUILD_BUILD_USER="Harikumar"
