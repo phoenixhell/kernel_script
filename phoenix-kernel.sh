@@ -29,7 +29,7 @@ export KBUILD_BUILD_USER="Harikumar"
 # Set if do you use GCC or clang compiler
 # Default is clang compiler
 #
-COMPILER=clang
+COMPILER=aosp_clang
 GIT_CLANG=false
 
 # Get distro name
