@@ -104,7 +104,7 @@ export SUBARCH=ARM64
 # Set function for cloning repository
 clone() {
 	# Clone AnyKernel3
-	git clone --depth=1 https://github.com/fiqri19102002/AnyKernel3.git -b sweet
+	git clone --depth=1 https://github.com/hariphoenix1708/AnyKernel3 -b dev
 
 	if [ $COMPILER == "clang" ]; then
 		# Clone Proton clang
@@ -221,13 +221,13 @@ compile() {
 gen_zip() {
 	if [ $LOCALBUILD == "1" ]; then
 		cd AnyKernel3 || exit
-		rm -rf dtb.img dtbo.img Image.gz-dtb *.zip
+		rm -rf dtbo/oss/dtbo.img dtb.img Image.gz-dtb *.zip
 		cd ..
 	fi
 
 	# Move kernel image to AnyKernel3
 	mv "$IMG_DIR"/dtb.img AnyKernel3/dtb.img
-	mv "$IMG_DIR"/dtbo.img AnyKernel3/dtbo.img
+	mv "$IMG_DIR"/dtbo.img AnyKernel3/dtbo/oss/dtbo.img
 	mv "$IMG_DIR"/Image AnyKernel3/Image.gz-dtb
 	cd AnyKernel3 || exit
 
