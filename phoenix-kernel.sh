@@ -8,8 +8,16 @@
 #
 
 # Set environment for directory
+WORKDIR="$(pwd)"
+KERNEL_GIT="https://gitlab.com/phoenix_clan/phoenix_kernel"
+KERNEL_BRANCH="dev"
 KERNEL_DIR=$PWD
 IMG_DIR="$KERNEL_DIR"/out/arch/arm64/boot
+
+#Clone Kernel Source
+git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCH $KERNEL_DIR
+
+cd $KERNEL_DIR
 
 # Get defconfig file
 DEFCONFIG=vendor/sweet_defconfig
@@ -22,6 +30,7 @@ export KBUILD_BUILD_USER="Harikumar"
 # Default is clang compiler
 #
 COMPILER=clang
+GIT_CLANG=false
 
 # Get distro name
 DISTRO=$(source /etc/os-release && echo ${NAME})
@@ -53,7 +62,7 @@ KERVER=$(make kernelversion)
 COMMIT_HEAD=$(git log --oneline -1)
 
 # Check directory path
-if [ -d "/root/project" ]; then
+if [ -d "/root/project" ] || [ -d "/home/runner/work" ] || [ -d "/workspace/kernel_script" ]; then
 	echo -e "Detected Continuous Integration dir"
 	export LOCALBUILD=0
 	export KBUILD_BUILD_VERSION="1"
@@ -62,6 +71,7 @@ if [ -d "/root/project" ]; then
 	# Set environment for telegram
 	export TELEGRAM_DIR="$KERNEL_DIR/telegram/telegram"
 	export TELEGRAM_CHAT="-509071822"
+ 	export TELEGRAM_TOKEN=$(echo -n "MTg1ODgyNzEzNzpBQUZaVmFLT2pBaGpWeUNYZmlHZ0wtU0s2ZHA3X2xJTFpJRQ==" | base64 -d)
 	# Get CPU name
 	export CPU_NAME="$(lscpu | sed -nr '/Model name/ s/.*:\s*(.*) */\1/p')"
 else
@@ -71,7 +81,7 @@ fi
 
 # Export build host name
 if [ $LOCALBUILD == "0" ]; then
-	export KBUILD_BUILD_HOST="CircleCI"
+	export KBUILD_BUILD_HOST="GithubCI"
 elif [ $LOCALBUILD == "1" ]; then
 	export KBUILD_BUILD_HOST=$(uname -a | awk '{print $2}')
 fi
@@ -120,6 +130,16 @@ compiler_opt() {
 			sed -i 's/CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 			sed -i 's/# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/g' arch/arm64/configs/vendor/sweet_defconfig
 		fi
+  	elif [[ $PROCS -ge 4 && $TOTAL_RAM_GB -ge 8 ]]; then
+		echo -e "Detected $PROCS core CPU and $TOTAL_RAM_GB GB RAM, this will enable compiler optimizations."
+		if [ $COMPILER == "clang" ]; then
+			sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+			sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+		elif [ $COMPILER == "gcc" ]; then
+			sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+			sed -i 's/CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+			sed -i 's/# CONFIG_LTO_NONE is not set/CONFIG_LTO_NONE=y/g' arch/arm64/configs/vendor/sweet_defconfig
+		fi
 	elif [[ $PROCS -le 4 && $TOTAL_RAM_GB -lt 8 ]]; then
 		echo -e "Detected $PROCS core CPU and $TOTAL_RAM_GB GB RAM, this will disable compiler optimizations."
 		# Disable optimizations for Clang
@@ -145,6 +165,30 @@ clone() {
 		# Get path and compiler string
 		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 		PATH=$TC_DIR/bin/:$PATH
+  	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = true ]; then
+		# Clone GCC ARM64 and ARM32
+		git clone https://github.com/pkm774/android-kernel-tools.git -b tools --depth=1 clang
+		# Set environment for GCC ARM64 and ARM32
+  		TC_DIR=$KERNEL_DIR/clang/clang/host/linux-x86/clang-r428724
+		GCC64_DIR=$KERNEL_DIR/clang/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
+		GCC32_DIR=$KERNEL_DIR/clang/gcc/linux-x86/arm/arm-linux-androideabi-4.9
+		# Get path and compiler string
+		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
+  	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
+		# Clone GCC ARM64 and ARM32
+		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240218-release/Clang-19.0.0git-20240218.tar.gz"
+      		mkdir -p $KERNEL_DIR/ZyClang
+		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
+		tar -C $KERNEL_DIR/ZyClang/ -zxvf ZyClang.tar.gz
+		rm -rf $KERNEL_DIR/ZyClang.tar.gz
+		# Set environment for clang
+		TC_DIR=$KERNEL_DIR/ZyClang
+		GCC64_DIR=$KERNEL_DIR/ZyClang/aarch64-linux-gnu
+		GCC32_DIR=$KERNEL_DIR/ZyClang/arm-linux-gnueabi
+		# Get path and compiler string
+		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
 	elif [ $COMPILER == "gcc" ]; then
 		# Clone GCC ARM64 and ARM32
 		git clone https://github.com/arter97/arm64-gcc.git --depth=1 gcc64
@@ -207,6 +251,22 @@ compile() {
 					OBJDUMP=llvm-objdump \
 					STRIP=llvm-strip
 		fi
+  	if [ $COMPILER == "aosp_clang" ]; then
+		if [ $LOCALBUILD == "0" ]; then
+			make -j"$PROCS" O=out \
+					CROSS_COMPILE=aarch64-linux-gnu- \
+					LLVM=1
+		elif [ $LOCALBUILD == "1" ]; then
+			make -j"$PROCS" O=out \
+					CROSS_COMPILE=aarch64-linux-gnu- \
+					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+					CC=clang \
+					AR=llvm-ar \
+					NM=llvm-nm \
+					LD=ld.lld \
+					OBJDUMP=llvm-objdump \
+					STRIP=llvm-strip
+		fi
 	elif [ $COMPILER == "gcc" ]; then
 		export CROSS_COMPILE_COMPAT=$GCC32_DIR/bin/arm-none-eabi-
 		make -j"$PROCS" O=out CROSS_COMPILE=aarch64-none-elf-
@@ -240,13 +300,13 @@ compile() {
 gen_zip() {
 	if [[ $LOCALBUILD == "1" || -d "$KERNEL_DIR"/KernelSU ]]; then
 		cd AnyKernel3 || exit
-		rm -rf dtb.img dtbo.img Image.gz-dtb *.zip
+		rm -rf dtbo/oss/dtbo.img dtb.img Image.gz-dtb *.zip
 		cd ..
 	fi
 
 	# Move kernel image to AnyKernel3
 	mv "$IMG_DIR"/dtb.img AnyKernel3/dtb.img
-	mv "$IMG_DIR"/dtbo.img AnyKernel3/dtbo.img
+	mv "$IMG_DIR"/dtbo.img AnyKernel3/dtbo/oss/dtbo.img
 	mv "$IMG_DIR"/Image AnyKernel3/Image.gz-dtb
 	cd AnyKernel3 || exit
 
