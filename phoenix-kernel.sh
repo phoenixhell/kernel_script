@@ -251,7 +251,7 @@ compile() {
 					OBJDUMP=llvm-objdump \
 					STRIP=llvm-strip
 		fi
-  	if [ $COMPILER == "aosp_clang" ]; then
+  	elif [ $COMPILER == "aosp_clang" ]; then
 		if [ $LOCALBUILD == "0" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
