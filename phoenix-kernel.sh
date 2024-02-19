@@ -11,7 +11,7 @@
 WORKDIR="$(pwd)"
 KERNEL_GIT="https://gitlab.com/phoenix_clan/phoenix_kernel"
 KERNEL_BRANCH="dev"
-KERNEL_DIR=$PWD
+KERNEL_DIR="$WORKDIR/Phoenix"
 IMG_DIR="$KERNEL_DIR"/out/arch/arm64/boot
 
 #Clone Kernel Source
