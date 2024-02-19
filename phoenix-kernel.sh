@@ -135,6 +135,10 @@ compiler_opt() {
 		if [ $COMPILER == "clang" ]; then
 			sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 			sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+   		elif [ $COMPILER == "aosp_clang" ]; then
+			sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+			sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+   			sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' $DEVICE_DEFCONFIG_FILE
 		elif [ $COMPILER == "gcc" ]; then
 			sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 			sed -i 's/CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
