@@ -29,8 +29,8 @@ export KBUILD_BUILD_USER="Harikumar"
 # Set if do you use GCC or clang compiler
 # Default is clang compiler
 #
-COMPILER=aosp_clang
-GIT_CLANG=false
+COMPILER=sd_clang
+GIT_CLANG=true
 
 # Get distro name
 DISTRO=$(source /etc/os-release && echo ${NAME})
@@ -197,6 +197,16 @@ clone() {
 		# Get path and compiler string
 		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
+  	elif [ $COMPILER == "sd_clang" ] && [ "$GIT_CLANG" = true ]; then
+		# Clone GCC ARM64 and ARM32
+		git clone https://gitlab.com/ZyCromerZ/sdclang-16.1.0.1.git -b main --depth=1 clang
+		# Set environment for GCC ARM64 and ARM32
+  		TC_DIR=$KERNEL_DIR/clang
+		#GCC64_DIR=$KERNEL_DIR/clang/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
+		#GCC32_DIR=$KERNEL_DIR/clang/gcc/linux-x86/arm/arm-linux-androideabi-4.9
+		# Get path and compiler string
+		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
+		PATH=$TC_DIR/bin/:$PATH
 	elif [ $COMPILER == "gcc" ]; then
 		# Clone GCC ARM64 and ARM32
 		git clone https://github.com/arter97/arm64-gcc.git --depth=1 gcc64
@@ -260,6 +270,22 @@ compile() {
 					STRIP=llvm-strip
 		fi
   	elif [ $COMPILER == "aosp_clang" ]; then
+		if [ $LOCALBUILD == "0" ]; then
+			make -j"$PROCS" O=out \
+					CROSS_COMPILE=aarch64-linux-gnu- \
+					LLVM=1
+		elif [ $LOCALBUILD == "1" ]; then
+			make -j"$PROCS" O=out \
+					CROSS_COMPILE=aarch64-linux-gnu- \
+					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+					CC=clang \
+					AR=llvm-ar \
+					NM=llvm-nm \
+					LD=ld.lld \
+					OBJDUMP=llvm-objdump \
+					STRIP=llvm-strip
+		fi
+  	elif [ $COMPILER == "sd_clang" ]; then
 		if [ $LOCALBUILD == "0" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
