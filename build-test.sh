@@ -9,7 +9,7 @@
 
 # Set environment for directory
 WORKDIR="$(pwd)"
-KERNEL_GIT="https://gitlab.com/phoenix_clan/phoenix_kernel"
+KERNEL_GIT="https://gitlab.com/phoenix_clan/kernel_xiaomi_sweet"
 KERNEL_BRANCH="dev"
 KERNEL_DIR="$WORKDIR/Phoenix"
 IMG_DIR="$KERNEL_DIR"/out/arch/arm64/boot
