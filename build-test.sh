@@ -19,12 +19,14 @@ git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCH $KERNEL_DIR
 
 cd $KERNEL_DIR
 
+rm -rf out && make clean && make proper
 # Get defconfig file
 DEFCONFIG=vendor/sweet_defconfig
 
 # Set common environment
 export KBUILD_BUILD_USER="Harikumar"
-
+export ARCH=arm64
+export SUBARCH=ARM64
 #
 # Set if do you use GCC or clang compiler
 # Default is clang compiler
