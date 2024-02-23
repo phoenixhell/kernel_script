@@ -31,8 +31,8 @@ export SUBARCH=ARM64
 # Set if do you use GCC or clang compiler
 # Default is clang compiler
 #
-COMPILER=sd_clang
-GIT_CLANG=true
+COMPILER=aosp_clang
+GIT_CLANG=false
 
 # Get distro name
 DISTRO=$(source /etc/os-release && echo ${NAME})
@@ -195,7 +195,7 @@ clone() {
 		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
   	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
 		# Clone GCC ARM64 and ARM32
-		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240218-release/Clang-19.0.0git-20240218.tar.gz"
+		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240223-release/Clang-19.0.0git-20240223.tar.gz"
       		mkdir -p $KERNEL_DIR/ZyClang
 		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 		tar -C $KERNEL_DIR/ZyClang/ -zxvf ZyClang.tar.gz
