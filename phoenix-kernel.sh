@@ -197,7 +197,7 @@ clone() {
 		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
   	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
 		# Clone GCC ARM64 and ARM32
-		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240223-release/Clang-19.0.0git-20240223.tar.gz"
+		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240307-release/Clang-19.0.0git-20240307.tar.gz"
       		mkdir -p $KERNEL_DIR/ZyClang
 		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 		tar -C $KERNEL_DIR/ZyClang/ -zxvf ZyClang.tar.gz
@@ -286,7 +286,7 @@ compile() {
 		if [ $LOCALBUILD == "0" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
-					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
+					CROSS_COMPILE_ARM32=arm-linux-gnueabi- \
 					CC=clang \
 					AR=llvm-ar \
 					NM=llvm-nm \
@@ -369,13 +369,13 @@ compiler_opt
 if [ $LOCALBUILD == "0" ]; then
 	send_tg_msg
 fi
-override_name
+#override_name
 compile
 set_naming
 gen_zip
 setup_ksu
 compiler_opt
-override_name
+#override_name
 compile
 set_naming
 gen_zip
