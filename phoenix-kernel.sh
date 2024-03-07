@@ -9,8 +9,8 @@
 
 # Set environment for directory
 WORKDIR="$(pwd)"
-KERNEL_GIT="https://gitlab.com/phoenix_clan/phoenix_kernel"
-KERNEL_BRANCH="dev"
+KERNEL_GIT="https://github.com/hariphoenix1708/kernel_xiaomi_sweet"
+KERNEL_BRANCH="fourteen"
 KERNEL_DIR="$WORKDIR/Phoenix"
 IMG_DIR="$KERNEL_DIR"/out/arch/arm64/boot
 
@@ -19,18 +19,22 @@ git clone --depth=1 $KERNEL_GIT -b $KERNEL_BRANCH $KERNEL_DIR
 
 cd $KERNEL_DIR
 
+rm -rf out && make clean && make mrproper
+
 # Get defconfig file
 DEFCONFIG=vendor/sweet_defconfig
 
 # Set common environment
 export KBUILD_BUILD_USER="Harikumar"
+export ARCH=arm64
+export SUBARCH=ARM64
 
 #
 # Set if do you use GCC or clang compiler
 # Default is clang compiler
 #
-COMPILER=sd_clang
-GIT_CLANG=true
+COMPILER=aosp_clang
+GIT_CLANG=false
 
 # Get distro name
 DISTRO=$(source /etc/os-release && echo ${NAME})
@@ -81,7 +85,7 @@ fi
 
 # Export build host name
 if [ $LOCALBUILD == "0" ]; then
-	export KBUILD_BUILD_HOST="GithubCI"
+	export KBUILD_BUILD_HOST="CircleCI"
 elif [ $LOCALBUILD == "1" ]; then
 	export KBUILD_BUILD_HOST=$(uname -a | awk '{print $2}')
 fi
@@ -129,6 +133,10 @@ compiler_opt() {
 			sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 			sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' arch/arm64/configs/vendor/sweet_defconfig
    			sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+      		elif [ $COMPILER == "sd_clang" ]; then
+			sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+			sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+   			sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 		elif [ $COMPILER == "gcc" ]; then
 			sed -i 's/CONFIG_LTO=y/# CONFIG_LTO is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 			sed -i 's/CONFIG_LTO_CLANG=y/# CONFIG_LTO_CLANG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
@@ -140,6 +148,10 @@ compiler_opt() {
 			sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 			sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' arch/arm64/configs/vendor/sweet_defconfig
    		elif [ $COMPILER == "aosp_clang" ]; then
+			sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+			sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+   			sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
+      		elif [ $COMPILER == "sd_clang" ]; then
 			sed -i 's/CONFIG_LTO_GCC=y/# CONFIG_LTO_GCC is not set/g' arch/arm64/configs/vendor/sweet_defconfig
 			sed -i 's/CONFIG_GCC_GRAPHITE=y/# CONFIG_GCC_GRAPHITE is not set/g' arch/arm64/configs/vendor/sweet_defconfig
    			sed -i 's/CONFIG_CC_STACKPROTECTOR_STRONG=y/# CONFIG_CC_STACKPROTECTOR_STRONG is not set/g' arch/arm64/configs/vendor/sweet_defconfig
@@ -163,7 +175,7 @@ compiler_opt() {
 # Set function for cloning repository
 clone() {
 	# Clone AnyKernel3
-	git clone --depth=1 https://github.com/hariphoenix1708/AnyKernel3.git -b dev
+	git clone --depth=1 https://github.com/fiqri19102002/AnyKernel3.git -b sweet
 
 	if [ $COMPILER == "clang" ]; then
 		# Clone Proton clang
@@ -185,7 +197,7 @@ clone() {
 		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
   	elif [ $COMPILER == "aosp_clang" ] && [ "$GIT_CLANG" = false ]; then
 		# Clone GCC ARM64 and ARM32
-		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240218-release/Clang-19.0.0git-20240218.tar.gz"
+		ZYCLANG_DLINK="https://github.com/ZyCromerZ/Clang/releases/download/19.0.0git-20240223-release/Clang-19.0.0git-20240223.tar.gz"
       		mkdir -p $KERNEL_DIR/ZyClang
 		aria2c -s16 -x16 -k1M $ZYCLANG_DLINK -o ZyClang.tar.gz
 		tar -C $KERNEL_DIR/ZyClang/ -zxvf ZyClang.tar.gz
@@ -197,16 +209,6 @@ clone() {
 		# Get path and compiler string
 		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
 		PATH=$TC_DIR/bin/:$GCC64_DIR/bin/:$GCC32_DIR/bin/:$PATH
-  	elif [ $COMPILER == "sd_clang" ] && [ "$GIT_CLANG" = true ]; then
-		# Clone GCC ARM64 and ARM32
-		git clone https://gitlab.com/ZyCromerZ/sdclang-16.1.0.1.git -b main --depth=1 clang
-		# Set environment for GCC ARM64 and ARM32
-  		TC_DIR=$KERNEL_DIR/clang
-		#GCC64_DIR=$KERNEL_DIR/clang/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
-		#GCC32_DIR=$KERNEL_DIR/clang/gcc/linux-x86/arm/arm-linux-androideabi-4.9
-		# Get path and compiler string
-		KBUILD_COMPILER_STRING=$("$TC_DIR"/bin/clang --version | head -n 1 | perl -pe 's/\(http.*?\)//gs' | sed -e 's/  */ /g' -e 's/[[:space:]]*$//')
-		PATH=$TC_DIR/bin/:$PATH
 	elif [ $COMPILER == "gcc" ]; then
 		# Clone GCC ARM64 and ARM32
 		git clone https://github.com/arter97/arm64-gcc.git --depth=1 gcc64
@@ -231,6 +233,17 @@ set_naming() {
 		KERNEL_NAME="Phoenix-sweet-personal-$ZIP_DATE"
 		export ZIP_NAME="$KERNEL_NAME.zip"
 	fi
+}
+
+# Set function for override kernel name
+override_name() {
+	if [ -d "$KERNEL_DIR"/KernelSU ]; then
+		LOCALVERSION="-Phoenix-[KSU]-personal"
+	else
+		LOCALVERSION="-Phoenix-personal"
+	fi
+
+	export LOCALVERSION
 }
 
 # Set function for send messages to Telegram
@@ -273,10 +286,6 @@ compile() {
 		if [ $LOCALBUILD == "0" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
-					LLVM=1
-		elif [ $LOCALBUILD == "1" ]; then
-			make -j"$PROCS" O=out \
-					CROSS_COMPILE=aarch64-linux-gnu- \
 					CROSS_COMPILE_COMPAT=arm-linux-gnueabi- \
 					CC=clang \
 					AR=llvm-ar \
@@ -284,12 +293,6 @@ compile() {
 					LD=ld.lld \
 					OBJDUMP=llvm-objdump \
 					STRIP=llvm-strip
-		fi
-  	elif [ $COMPILER == "sd_clang" ]; then
-		if [ $LOCALBUILD == "0" ]; then
-			make -j"$PROCS" O=out \
-					CROSS_COMPILE=aarch64-linux-gnu- \
-					LLVM=1
 		elif [ $LOCALBUILD == "1" ]; then
 			make -j"$PROCS" O=out \
 					CROSS_COMPILE=aarch64-linux-gnu- \
@@ -334,13 +337,13 @@ compile() {
 gen_zip() {
 	if [[ $LOCALBUILD == "1" || -d "$KERNEL_DIR"/KernelSU ]]; then
 		cd AnyKernel3 || exit
-		rm -rf dtbo/oss/dtbo.img dtb.img Image.gz-dtb *.zip
+		rm -rf dtb.img dtbo.img Image.gz-dtb *.zip
 		cd ..
 	fi
 
 	# Move kernel image to AnyKernel3
 	mv "$IMG_DIR"/dtb.img AnyKernel3/dtb.img
-	mv "$IMG_DIR"/dtbo.img AnyKernel3/dtbo/oss/dtbo.img
+	mv "$IMG_DIR"/dtbo.img AnyKernel3/dtbo.img
 	mv "$IMG_DIR"/Image AnyKernel3/Image.gz-dtb
 	cd AnyKernel3 || exit
 
@@ -366,11 +369,13 @@ compiler_opt
 if [ $LOCALBUILD == "0" ]; then
 	send_tg_msg
 fi
+override_name
 compile
 set_naming
 gen_zip
 setup_ksu
 compiler_opt
+override_name
 compile
 set_naming
 gen_zip
